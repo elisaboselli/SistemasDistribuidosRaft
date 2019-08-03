@@ -1,0 +1,6 @@
+[
+	{"address" : "localhost" , "port" : 6789},
+	{"address" : "localhost" , "port" : 6788},
+	{"address" : "localhost" , "port" : 6787},
+	{"address" : "localhost" , "port" : 6786}
+]
