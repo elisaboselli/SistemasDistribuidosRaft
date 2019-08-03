@@ -71,6 +71,8 @@ local.properties
 .project
 proyecto/.classpath
 proyecto/.project
+proyecto/.gitignore
+proyecto/.settings
 
 # Android Studio
 .idea/
