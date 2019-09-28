@@ -8,14 +8,9 @@ public final class Constants {
     public static final int SERVERS_QTY = 5;
     public static final int QUORUM = (SERVERS_QTY / 2) + 1;
 
-    public static final long MIN_TIMEOUT = 60000;   // 1 minute
-    public static final long MAX_TIMEOUT = 120000;  // 2 minutes
-    public static final long HEART_BEAT = 10000; // 10 seconds
-
-    // Node status
-    public static final String LEADER = "Leader";
-    public static final String FOLLOWER = "Follower";
-    public static final String CANDIDATE = "Candidate";
+    public static final int MIN_TIMEOUT = 60000;   // 1 minute
+    public static final int MAX_TIMEOUT = 120000;  // 2 minutes
+    public static final int HEART_BEAT = 10000; // 10 seconds
 
     // Message Types
     public static final String CLIENT_MESSAGE = "client_message";
