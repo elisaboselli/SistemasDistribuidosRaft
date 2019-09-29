@@ -29,5 +29,6 @@ public final class Constants {
     public static final String COMMIT = "commit";
     public static final String COMMIT_OK = "commit_ok";
     public static final String POSTULATION = "postulation";
-    public static final String VOTE = "vote";
+    public static final String VOTE_OK = "vote_ok";
+    public static final String VOTE_REJECT = "vote_reject";
 }

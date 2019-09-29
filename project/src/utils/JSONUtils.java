@@ -3,6 +3,7 @@ package utils;
 import com.google.gson.Gson;
 import messages.ClientMessage;
 import messages.Message;
+import messages.ServerRPC;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -62,9 +63,10 @@ public final class JSONUtils {
         return gson.fromJson(jsonStr,Message.class);
     }
 
-    /*public ServerMessage getServerMessage(DatagramPacket request) {
+    public static ServerRPC getServerRPC(DatagramPacket request) {
         String jsonStr = processRequest(request);
-        return ServerMessage.fromJSON(jsonStr);
-    }*/
+        Gson gson = new Gson();
+        return gson.fromJson(jsonStr, ServerRPC.class);
+    }
 
 }

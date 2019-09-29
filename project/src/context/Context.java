@@ -5,7 +5,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 import utils.Constants;
 import utils.Host;
@@ -18,8 +17,10 @@ public class Context {
       //private byte[] buffer;
       private List<Host> allHosts;
       private Host leader;
+      private int term;
       
       public Context (int port, DatagramSocket serverSocket) {
+    	  this.term = 0;
     	  this.serverSocket = serverSocket;
           this.port = port;
           this.leader = null;
@@ -49,6 +50,18 @@ public class Context {
               System.out.println("IO Exception: " + e.getMessage());
           }
       }
+      
+    public int incrementTerm() {
+    	return term++;
+  	}
+      
+    public int getTerm() {
+  		return term;
+  	}
+    
+    public void setTerm(int term) {
+		this.term = term;
+	}
       
     public int getPort() {
 		return port;
