@@ -2,14 +2,13 @@ package states;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.SocketException;
+import java.util.Timer;
 import java.util.TimerTask;
 
 import context.Context;
 import messages.HeartBeat;
-import messages.Message;
+import utils.Constants;
 import utils.Host;
-import utils.JSONUtils;
-import utils.UDPUtils;
 
 public class Leader {
 	
@@ -18,13 +17,16 @@ public class Leader {
 	        // Datagram Socket
 	        byte[] buffer = new byte[1000];
 	        // Heart Beat Sender
-	        TimerTask timerTask = new TimerTask() {
+	        Timer timer = new Timer();
+	        TimerTask hearbeat = new TimerTask() {
 	          @Override
 	          public void run() {
 	            Leader.sendHeartBeat(context);
 	          }
 	        };
-	        timerTask.run();
+	        timer.schedule(hearbeat, Constants.HEART_BEAT);
+	        //TODO puede llegar un mensaje de un candidato con un termino mayor
+	        //TODO puede 
 	        /*while (true) {
 	          // Receive a message
 	          DatagramPacket receivedMessage = new DatagramPacket(buffer, buffer.length);
