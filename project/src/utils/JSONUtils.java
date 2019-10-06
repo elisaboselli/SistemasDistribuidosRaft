@@ -17,9 +17,10 @@ import java.util.List;
 
 public final class JSONUtils {
 
-    private JSONUtils() {}
+    private JSONUtils() {
+    }
 
-    public static List<Host> readHostFile(String filename){
+    public static List<Host> readHostFile(String filename) {
         String jsonHosts = readJSONFile(filename);
         return Host.fromJSONArray(jsonHosts);
     }
@@ -57,10 +58,10 @@ public final class JSONUtils {
         return gson.fromJson(jsonStr, ClientMessage.class);
     }
 
-    public static Message getMessage(DatagramPacket request){
+    public static Message getMessage(DatagramPacket request) {
         String jsonStr = processRequest(request);
         Gson gson = new Gson();
-        return gson.fromJson(jsonStr,Message.class);
+        return gson.fromJson(jsonStr, Message.class);
     }
 
     public static ServerRPC getServerRPC(DatagramPacket request) {

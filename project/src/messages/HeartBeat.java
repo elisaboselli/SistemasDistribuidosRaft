@@ -8,7 +8,7 @@ public class HeartBeat {
     private int from;
     private int to;
 
-    public HeartBeat(int _from, int _to){
+    public HeartBeat(int _from, int _to) {
         this.type = Constants.HEART_BEAT_MESSAGE;
         this.from = _from;
         this.to = _to;

@@ -1,32 +1,31 @@
 package states;
 
-
 import context.Context;
 
 public enum State {
-    FOLLOWER(){
+    FOLLOWER() {
         @Override
         public State execute(Context context) {
             return Follower.execute(context);
         }
     },
-    CANDIDATE(){
+    CANDIDATE() {
         @Override
         public State execute(Context context) {
-            return Candidate.execute(context); 
+            return Candidate.execute(context);
         }
     },
-    LEADER(){
+    LEADER() {
         @Override
         public State execute(Context context) {
-        	return Leader.execute(context);
+            return Leader.execute(context);
         }
     },
-    HALT(){
+    HALT() {
         @Override
         public State execute(Context context) {
-        	return HALT;
+            return HALT;
         }
     };
-	public abstract State execute(Context context);
+    public abstract State execute(Context context);
 }

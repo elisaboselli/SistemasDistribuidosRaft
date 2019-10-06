@@ -10,20 +10,20 @@ public class Message {
     private String type;
     private String jsonMessage;
 
-    public Message(String _type, String _json){
+    public Message(String _type, String _json) {
         this.type = _type;
         this.jsonMessage = _json;
     }
 
-    public String getType(){
+    public String getType() {
         return this.type;
     }
 
-    public String getJsonMessage(){
+    public String getJsonMessage() {
         return this.jsonMessage;
     }
 
-    public JSONObject getMessageAsJson(){
+    public JSONObject getMessageAsJson() {
         JSONParser parser = new JSONParser();
         JSONObject json = null;
         try {
