@@ -5,120 +5,136 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-//import messages.ClientMessage;
-//import messages.ClientMessageType;
-//import messages.Element;
-import messages.ClientMessage;
 import messages.Message;
 import utils.Constants;
+import utils.JSONUtils;
 
 public class Client {
 
-  public static void main(String args[]) {
+    public static void main(String args[]) {
 
-    try {
-      DatagramSocket socketUDP = new DatagramSocket();
-      InetAddress hostServer = InetAddress.getByName(args[0]);
-      int portServer = 6789;
+        try {
 
-      Scanner scan = new Scanner(System.in);
-      boolean nextOp = true;
+            // Initialize ports
+            int localPort = 6790;
+            int serverPort = Integer.parseInt(args[0]);
 
-      System.out.println("\n---------- CLIENT SERVER ----------\n");
+            // Create UDP Socket
+            DatagramSocket socketUDP = new DatagramSocket(localPort);
+            InetAddress hostServer = InetAddress.getByName("localhost");
 
-      while (nextOp) {
-        String operation = getOperationFromInput(scan);
-        int id, value;
-        ClientMessage clientMessage = new ClientMessage();
+            // Initialize scanner
+            Scanner scan = new Scanner(System.in);
+            boolean nextOp = true;
 
-        if (operation.equalsIgnoreCase(Constants.CLIENT_GET)) {
-          id = getIdFromInput(scan);
-          clientMessage.setType(Constants.CLIENT_GET);
-          clientMessage.setId(id);
+            System.out.println("\n---------- BEGIN CLIENT ----------\n");
+
+            while (nextOp) {
+
+                // Get client operation
+                String operation = getOperationFromInput(scan);
+
+                List<String> params = new ArrayList<String>();
+                String messageType = Constants.EMPTY_MESSAGE;
+                int id, value;
+
+                if (operation.equalsIgnoreCase(Constants.CLIENT_GET)) {
+                    id = getIdFromInput(scan);
+                    params.add(String.valueOf(id));
+                    messageType = Constants.CLIENT_GET_MESSAGE;
+                }
+
+                if (operation.equalsIgnoreCase(Constants.CLIENT_SET)) {
+                    id = getIdFromInput(scan);
+                    value = getValueFromInput(scan);
+                    params.add(String.valueOf(id));
+                    params.add(String.valueOf(value));
+                    messageType = Constants.CLIENT_SET_MESSAGE;
+                }
+
+                // Prepare request message
+                Message requestMessage = new Message(Constants.NO_TERM, messageType, localPort, serverPort, params);
+                requestMessage.log(localPort);
+
+                // Prepare datagram package
+                String requestMessageStr = requestMessage.toJson();
+                DatagramPacket request = new DatagramPacket(requestMessageStr.getBytes(), requestMessageStr.length(),
+                        hostServer, serverPort);
+
+                // Send message
+                socketUDP.send(request);
+
+                // Receive response
+                byte[] buffer = new byte[1000];
+                DatagramPacket response = new DatagramPacket(buffer, buffer.length);
+                socketUDP.receive(response);
+
+                // Parse Response
+                Message responseMessage = JSONUtils.messageFromJson(response);
+                responseMessage.log(localPort);
+
+                // Prepare for next operation
+                nextOp = getNextOperationFromInput(scan);
+
+            }
+
+            // Close scanner & UDP Socket
+            scan.close();
+            socketUDP.close();
+
+            System.out.println("\n---------- CLOSING CLIENT SERVER ----------\n");
+
+        } catch (SocketException e) {
+            System.out.println("Socket: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO: " + e.getMessage());
         }
+    }
 
-        if (operation.equalsIgnoreCase(Constants.CLIENT_SET)) {
-          id = getIdFromInput(scan);
-          value = getValueFromInput(scan);
-          clientMessage.setType(Constants.CLIENT_SET);
-          clientMessage.setId(id);
-          clientMessage.setValue(value);
+    private static String getOperationFromInput(Scanner scan) {
+        String input = "";
+        boolean inputCorrect = false;
+
+        System.out.println("Enter the operation to be performed (GET / SET)");
+        while (!inputCorrect) {
+            input = scan.nextLine();
+            inputCorrect = (input.equalsIgnoreCase("get") || input.equalsIgnoreCase("set"));
+            if (!inputCorrect) {
+                System.out.println("Please, enter a valid operation (GET / SET)");
+            }
         }
-
-        clientMessage.setAddress(InetAddress.getLocalHost());
-        clientMessage.setPort(socketUDP.getLocalPort());
-
-        Message message = new Message(Constants.CLIENT_MESSAGE, clientMessage.toJSON());
-
-        DatagramPacket request = new DatagramPacket(message.toJSON().getBytes(),
-            message.toJSON().length(), hostServer, portServer);
-
-        socketUDP.send(request);
-
-        byte[] buffer = new byte[1000];
-        DatagramPacket response = new DatagramPacket(buffer, buffer.length);
-        socketUDP.receive(response);
-
-        // Get Response
-        // ClientMessage responseMsg = jsonUtils.getClientMessage(response);
-        // System.out.println("Response: " + responseMsg.toString());
-
-        nextOp = getNextOperationFromInput(scan);
-
-      }
-      scan.close();
-      socketUDP.close();
-      System.out.println("\n---------- CLOSING CLIENT SERVER ----------\n");
-
-    } catch (SocketException e) {
-      System.out.println("Socket: " + e.getMessage());
-    } catch (IOException e) {
-      System.out.println("IO: " + e.getMessage());
+        return input;
     }
-  }
 
-  private static String getOperationFromInput(Scanner scan) {
-    String input = "";
-    boolean inputCorrect = false;
+    private static boolean getNextOperationFromInput(Scanner scan) {
 
-    System.out.println("Enter the operation to be performed (GET / SET)");
-    while (!inputCorrect) {
-      input = scan.nextLine();
-      inputCorrect = (input.equalsIgnoreCase("get") || input.equalsIgnoreCase("set"));
-      if (!inputCorrect) {
-        System.out.println("Please, enter a valid operation (GET / SET)");
-      }
-    }
-    return input;
-  }
-
-  private static boolean getNextOperationFromInput(Scanner scan) {
-
-    String input;
-    scan.nextLine();
-    System.out.println("Do you want to perform another operation ? (Y / N)");
-    while (true) {
-      input = scan.nextLine();
-      if (input.equalsIgnoreCase("Y")) {
-        return true;
-      } else {
-        if (input.equalsIgnoreCase("N")) {
-          return false;
+        String input;
+        scan.nextLine();
+        System.out.println("Do you want to perform another operation ? (Y / N)");
+        while (true) {
+            input = scan.nextLine();
+            if (input.equalsIgnoreCase("Y")) {
+                return true;
+            } else {
+                if (input.equalsIgnoreCase("N")) {
+                    return false;
+                }
+            }
+            System.out.println("Please, enter a valid option (Y / N)");
         }
-      }
-      System.out.println("Please, enter a valid option (Y / N)");
     }
-  }
 
-  private static int getIdFromInput(Scanner scan) {
-    System.out.println("Enter the element id");
-    return scan.nextInt();
-  }
+    private static int getIdFromInput(Scanner scan) {
+        System.out.println("Enter the element id");
+        return scan.nextInt();
+    }
 
-  private static int getValueFromInput(Scanner scan) {
-    System.out.println("Enter the element new value");
-    return scan.nextInt();
-  }
+    private static int getValueFromInput(Scanner scan) {
+        System.out.println("Enter the element new value");
+        return scan.nextInt();
+    }
 }

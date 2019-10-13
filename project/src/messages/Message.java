@@ -1,42 +1,62 @@
 package messages;
 
+import java.util.List;
+
 import com.google.gson.Gson;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 public class Message {
 
+    private int term;
     private String type;
-    private String jsonMessage;
+    private int from;
+    private int to;
+    private List<String> params;
 
-    public Message(String _type, String _json){
-        this.type = _type;
-        this.jsonMessage = _json;
+    public Message(int term, String type, int from, int to, List<String> params) {
+        this.term = term;
+        this.type = type;
+        this.from = from;
+        this.to = to;
+        this.params = params;
     }
 
-    public String getType(){
+    public int getTerm() {
+        return this.term;
+    }
+
+    public String getType() {
         return this.type;
     }
 
-    public String getJsonMessage(){
-        return this.jsonMessage;
+    public int getFrom() {
+        return this.from;
     }
 
-    public JSONObject getMessageAsJson(){
-        JSONParser parser = new JSONParser();
-        JSONObject json = null;
-        try {
-            json = (JSONObject) parser.parse(this.jsonMessage);
-        } catch (ParseException e) {
-            System.out.println("Error while parsing json from message");
-            e.printStackTrace();
-        }
-        return json;
+    public int getTo() {
+        return this.to;
     }
 
-    public String toJSON() {
+    public List<String> getParams() {
+        return this.params;
+    }
+
+    public String toJson() {
         Gson gson = new Gson();
         return gson.toJson(this, Message.class);
     }
+
+    public void log(int localPort) {
+        System.out.println(this.type);
+        if (localPort == from) {
+            System.out.println("Sent to: " + this.to);
+        } else {
+            System.out.println("Received from: " + this.from);
+        }
+        System.out.print("Params: ");
+        for (String param : params) {
+            System.out.print(param + " ");
+        }
+        System.out.println("\n\n--------------------------------------------------------------\n");
+    }
+
 }
