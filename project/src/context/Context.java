@@ -20,9 +20,8 @@ public class Context {
     private Host leader;
     private int term;
 
-    public Context(int port, DatagramSocket serverSocket) {
+    public Context(int port) {
         this.term = 0;
-        this.serverSocket = serverSocket;
         this.port = port;
         this.leader = null;
         this.allHosts = ObtainAllHosts();
