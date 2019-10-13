@@ -25,7 +25,7 @@ Cualquier precondición o configuración asumida debería ser adecuadamente desc
 
 Al momento de importar este proyecto en eclipse, se debera tener en cuenta agregar los siguientes jar's:
 * gson-2.8.2.jar
-* json-simple-2.3.1.jar
+* ~~json-simple-2.3.1.jar~~ [deprecated]
 
 ## Running the tests
 
