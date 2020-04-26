@@ -5,71 +5,87 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-//import messages.ClientMessage;
-//import messages.ClientMessageType;
-//import messages.Element;
-import messages.ClientMessage;
 import messages.Message;
 import utils.Constants;
+import utils.JSONUtils;
 
 public class Client {
 
     public static void main(String args[]) {
 
         try {
-            DatagramSocket socketUDP = new DatagramSocket();
-            InetAddress hostServer = InetAddress.getByName(args[0]);
-            int portServer = 6789;
 
+            // Initialize ports
+            int localPort = 6790;
+            int serverPort = Integer.parseInt(args[0]);
+
+            // Create UDP Socket
+            DatagramSocket socketUDP = new DatagramSocket(localPort);
+            InetAddress hostServer = InetAddress.getByName("localhost");
+
+            // Initialize scanner
             Scanner scan = new Scanner(System.in);
             boolean nextOp = true;
 
-            System.out.println("\n---------- CLIENT SERVER ----------\n");
+            System.out.println("\n---------- BEGIN CLIENT ----------\n");
 
             while (nextOp) {
+
+                // Get client operation
                 String operation = getOperationFromInput(scan);
+
+                List<String> params = new ArrayList<String>();
+                String messageType = Constants.EMPTY_MESSAGE;
                 int id, value;
-                ClientMessage clientMessage = new ClientMessage();
 
                 if (operation.equalsIgnoreCase(Constants.CLIENT_GET)) {
                     id = getIdFromInput(scan);
-                    clientMessage.setType(Constants.CLIENT_GET);
-                    clientMessage.setId(id);
+                    params.add(String.valueOf(id));
+                    messageType = Constants.CLIENT_GET_MESSAGE;
                 }
 
                 if (operation.equalsIgnoreCase(Constants.CLIENT_SET)) {
                     id = getIdFromInput(scan);
                     value = getValueFromInput(scan);
-                    clientMessage.setType(Constants.CLIENT_SET);
-                    clientMessage.setId(id);
-                    clientMessage.setValue(value);
+                    params.add(String.valueOf(id));
+                    params.add(String.valueOf(value));
+                    messageType = Constants.CLIENT_SET_MESSAGE;
                 }
 
-                clientMessage.setAddress(InetAddress.getLocalHost());
-                clientMessage.setPort(socketUDP.getLocalPort());
+                // Prepare request message
+                Message requestMessage = new Message(Constants.NO_TERM, messageType, localPort, serverPort, params);
+                requestMessage.log(localPort);
 
-                Message message = new Message(Constants.CLIENT_MESSAGE, clientMessage.toJSON());
+                // Prepare datagram package
+                String requestMessageStr = requestMessage.toJson();
+                DatagramPacket request = new DatagramPacket(requestMessageStr.getBytes(), requestMessageStr.length(),
+                        hostServer, serverPort);
 
-                DatagramPacket request = new DatagramPacket(message.toJSON().getBytes(), message.toJSON().length(),
-                        hostServer, portServer);
-
+                // Send message
                 socketUDP.send(request);
 
+                // Receive response
                 byte[] buffer = new byte[1000];
                 DatagramPacket response = new DatagramPacket(buffer, buffer.length);
                 socketUDP.receive(response);
 
-                // Get Response
-                // ClientMessage responseMsg = jsonUtils.getClientMessage(response);
-                // System.out.println("Response: " + responseMsg.toString());
+                // Parse Response
+                Message responseMessage = JSONUtils.messageFromJson(response);
+                responseMessage.log(localPort);
 
+                // Prepare for next operation
                 nextOp = getNextOperationFromInput(scan);
 
             }
+
+            // Close scanner & UDP Socket
             scan.close();
             socketUDP.close();
+
             System.out.println("\n---------- CLOSING CLIENT SERVER ----------\n");
 
         } catch (SocketException e) {

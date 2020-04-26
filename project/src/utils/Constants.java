@@ -12,10 +12,15 @@ public final class Constants {
     public static final int MAX_TIMEOUT = 120000; // 2 minutes
     public static final int HEART_BEAT = 10000; // 10 seconds
 
+    public static final int NO_TERM = 0;
+
     // Message Types
-    public static final String CLIENT_MESSAGE = "client_message";
-    public static final String HEART_BEAT_MESSAGE = "heart_beat_message";
-    public static final String SERVER_MESSAGE = "server_message";
+    public static final String EMPTY_MESSAGE = "Empty Message";
+    public static final String CLIENT_MESSAGE = "Client Message";
+    public static final String CLIENT_GET_MESSAGE = "Client Get Message";
+    public static final String CLIENT_SET_MESSAGE = "Client Set Message";
+    public static final String HEART_BEAT_MESSAGE = "Heartbeat Message";
+    public static final String SERVER_MESSAGE = "Server Message";
 
     // Client Message Types
     public static final String CLIENT_GET = "get";

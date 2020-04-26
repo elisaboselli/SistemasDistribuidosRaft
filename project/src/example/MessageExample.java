@@ -1,13 +1,7 @@
 package example;
 
-import java.net.DatagramPacket;
 
 import com.google.gson.Gson;
-
-//import org.json.simple.JSONObject;
-
-//import org.json.simple.parser.JSONParser;
-//import org.json.simple.parser.ParseException;
 
 public class MessageExample {
 
@@ -45,6 +39,11 @@ public class MessageExample {
         return this.jsonMessage;
     }
 
+    public String toJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this, MessageExample.class);
+    }
+
     public void log(int localPort) {
         if (localPort == from) {
             System.out.println("Message Sent to: " + this.to);
@@ -54,18 +53,5 @@ public class MessageExample {
         System.out.println(this.jsonMessage);
         System.out.println("\n--------------------------------------------------------------\n");
 
-    }
-
-    public String toJson() {
-        Gson gson = new Gson();
-        return gson.toJson(this, MessageExample.class);
-    }
-
-    public MessageExample fromJson(DatagramPacket request) {
-        byte[] data = new byte[request.getLength()];
-        System.arraycopy(request.getData(), request.getOffset(), data, 0, request.getLength());
-        String jsonStr = new String(data);
-        Gson gson = new Gson();
-        return gson.fromJson(jsonStr, MessageExample.class);
     }
 }
