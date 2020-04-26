@@ -37,7 +37,7 @@ Completar
 
 ## Built With
 
-* Completarr
+* Completar
 
 ## Authors
 
