@@ -8,17 +8,18 @@ public class ServerMessage {
     private int id;
     private int value;
 
-    public ServerMessage(){}
+    public ServerMessage() {
+    }
 
-    public void setType(String _type){
+    public void setType(String _type) {
         this.type = _type;
     }
 
-    public void setId(int _id){
+    public void setId(int _id) {
         this.id = _id;
     }
 
-    public void setValue(int _value){
+    public void setValue(int _value) {
         this.value = _value;
     }
 

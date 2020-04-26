@@ -1,5 +1,6 @@
 package example;
 
+
 import com.google.gson.Gson;
 
 public class MessageExample {

@@ -47,7 +47,7 @@ public final class JSONUtils {
         String messageStr = parseDatagramPacket(datagramPacket);
         return gson.fromJson(messageStr, Message.class);
     }
-
+  
     public static String parseDatagramPacket(DatagramPacket request) {
         byte[] data = new byte[request.getLength()];
         System.arraycopy(request.getData(), request.getOffset(), data, 0, request.getLength());
