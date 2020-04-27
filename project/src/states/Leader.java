@@ -2,7 +2,6 @@ package states;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.SocketException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -16,7 +15,7 @@ public class Leader {
     static State execute(Context context) {
         // try {
         // Datagram Socket
-        byte[] buffer = new byte[1000];
+        //byte[] buffer = new byte[1000];
         // Heart Beat Sender
         Timer timer = new Timer();
         TimerTask hearbeat = new TimerTask() {
