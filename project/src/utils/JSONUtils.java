@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
-import messages.Message;
+import utils.Message;
 
 public final class JSONUtils {
 

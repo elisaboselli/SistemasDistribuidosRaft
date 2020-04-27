@@ -6,12 +6,14 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import com.google.gson.Gson;
 
-import messages.HeartBeat;
+import utils.Message;
 import utils.Constants;
 
 public class HeartBeatSenderExample {
@@ -77,13 +79,12 @@ public class HeartBeatSenderExample {
     }
 
     private static void sendHeartBeat(DatagramSocket datagramSocket, int localPort, int remotePort) {
-        InetAddress localhost;
         try {
-            localhost = InetAddress.getByName("localhost");
-        HeartBeat heartBeatMessage = new HeartBeat(localPort, remotePort);
-        DatagramPacket heartBeat = new DatagramPacket(heartBeatMessage.toJSON().getBytes(), heartBeatMessage.toJSON().length(), localhost, remotePort);
-        datagramSocket.send(heartBeat);
-        heartBeatMessage.log(localPort);
+            InetAddress localhost = InetAddress.getByName("localhost");
+            Message heartBeatMessage = new Message(0, Constants.HEART_BEAT_MESSAGE, localPort, remotePort,null);
+            DatagramPacket heartBeat = new DatagramPacket(heartBeatMessage.toJson().getBytes(), heartBeatMessage.toJson().length(), localhost, remotePort);
+            datagramSocket.send(heartBeat);
+            heartBeatMessage.log(localPort);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

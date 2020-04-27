@@ -2,7 +2,7 @@ package utils;
 
 import java.net.DatagramPacket;
 
-import messages.Message;
+import utils.Message;
 
 public final class UDPUtils {
 

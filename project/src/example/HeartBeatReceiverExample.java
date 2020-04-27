@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.Arrays;
+import java.util.List;
 
 import com.google.gson.Gson;
 
-import messages.HeartBeat;
+import utils.Message;
 import utils.Constants;
 
 public class HeartBeatReceiverExample {
@@ -32,12 +34,13 @@ public class HeartBeatReceiverExample {
                 // Parse request
                 Gson gson = new Gson();
                 String requestMessageStr = parseDatagramPacket(request);
-                HeartBeat heartBeatMessage = gson.fromJson(requestMessageStr, HeartBeat.class);
+                Message heartBeatMessage = gson.fromJson(requestMessageStr, Message.class);
                 heartBeatMessage.log(localPort);
 
                 // Prepare response
-                MessageExample responseMessage = new MessageExample(0, Constants.SERVER_MESSAGE, localPort,
-                    request.getPort(), "Heartbeat ok");
+                List<String> messageParams = Arrays.asList("HeartBeat ok");
+                Message responseMessage = new Message(0, Constants.EMPTY_MESSAGE, localPort,
+                    request.getPort(),messageParams);
 
                 // Prepare datagram packet
                 String responseMessageStr = responseMessage.toJson();

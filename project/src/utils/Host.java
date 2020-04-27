@@ -50,8 +50,7 @@ public class Host {
 
     public static List<Host> fromJSONArray(String jsonStr) {
         Gson gson = new Gson();
-        Type type = new TypeToken<List<Host>>() {
-        }.getType();
+        Type type = new TypeToken<List<Host>>() {}.getType();
         return gson.fromJson(jsonStr, type);
     }
 

@@ -1,5 +1,7 @@
-package messages;
+package utils;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -46,11 +48,14 @@ public class Message {
     }
 
     public void log(int localPort) {
-        System.out.println(this.type);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        
+        System.out.println("Message Type: " + this.type);
         if (localPort == from) {
-            System.out.println("Sent to: " + this.to);
+            System.out.println("Sent to: " + this.to + " [" + dtf.format(now) + "]");
         } else {
-            System.out.println("Received from: " + this.from);
+            System.out.println("Received from: " + this.from + " [" + dtf.format(now) + "]");
         }
         System.out.print("Params: ");
         for (String param : params) {
