@@ -12,7 +12,7 @@ import utils.Host;
 import utils.JSONUtils;
 
 public class Context {
-    private final static int WAIT_TIME = 60000;
+    //private final static int WAIT_TIME = 60000;
     private int port;
     private DatagramSocket serverSocket;
     // private byte[] buffer;
@@ -20,7 +20,7 @@ public class Context {
     private Host leader;
     private int term;
 
-    public Context(int port) {
+    public Context(int port) throws SocketException {
         this.term = 0;
         this.port = port;
         this.leader = null;
@@ -28,8 +28,8 @@ public class Context {
         try {
             this.serverSocket = new DatagramSocket(port);
         } catch (SocketException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("Socket exception: " + e.getMessage());
+            throw e;
         }
     }
 
@@ -95,6 +95,6 @@ public class Context {
     }
 
     public static int getWaitTime() {
-        return WAIT_TIME;
+        return Constants.MIN_TIMEOUT;
     }
 }

@@ -1,5 +1,7 @@
 package udpServers;
 
+import java.net.SocketException;
+
 import context.Context;
 import states.State;
 
@@ -16,8 +18,8 @@ public class Server {
             while (state != State.HALT) {
                 state = state.execute(context);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SocketException e) {
+            System.out.println("Server aborted by SocketExeption");
         }
     }
 
