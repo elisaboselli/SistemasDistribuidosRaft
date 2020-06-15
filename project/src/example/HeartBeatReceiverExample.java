@@ -24,14 +24,14 @@ public class HeartBeatReceiverExample {
         int heartBeatCount = 0;
        
         Boolean stillFollower = true;
-        class stopFollowingTask extends TimerTask{
+        class StopFollowingTask extends TimerTask{
             public void run() {
                 stopFollowing(stillFollower);
             }
         }
 
         wait_timer = new Timer();
-        wait_timer.schedule(new stopFollowingTask(), WAIT_TIME);
+        wait_timer.schedule(new StopFollowingTask(), WAIT_TIME);
 
         try {
 
@@ -44,10 +44,9 @@ public class HeartBeatReceiverExample {
             //while(heartBeatCount < 5){
             while(stillFollower){
 
-                //timer.restart();
                 wait_timer.cancel();
                 wait_timer = new Timer();
-                wait_timer.schedule(new stopFollowingTask(), WAIT_TIME);
+                wait_timer.schedule(new StopFollowingTask(), WAIT_TIME);
                 System.out.println("restart timer");
                 System.out.println("\n\n--------------------------------------------------------------\n");
 
