@@ -2,12 +2,11 @@ package states;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.SocketException;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import context.Context;
-import messages.HeartBeat;
+import utils.Message;
 import utils.Constants;
 import utils.Host;
 
@@ -16,7 +15,7 @@ public class Leader {
     static State execute(Context context) {
         // try {
         // Datagram Socket
-        byte[] buffer = new byte[1000];
+        //byte[] buffer = new byte[1000];
         // Heart Beat Sender
         Timer timer = new Timer();
         TimerTask hearbeat = new TimerTask() {
@@ -48,9 +47,9 @@ public class Leader {
     public static void sendHeartBeat(Context context) {
         try {
             for (Host host : context.getAllHosts()) {
-                HeartBeat heartBeatMessage = new HeartBeat(context.getPort(), host.getPort());
-                DatagramPacket heartBeat = new DatagramPacket(heartBeatMessage.toJSON().getBytes(),
-                        heartBeatMessage.toJSON().length(), host.getAddress(), host.getPort());
+                Message heartBeatMessage = new Message(0, Constants.HEART_BEAT_MESSAGE, context.getPort(), host.getPort(), null);
+                DatagramPacket heartBeat = new DatagramPacket(heartBeatMessage.toJson().getBytes(),
+                        heartBeatMessage.toJson().length(), host.getAddress(), host.getPort());
                 context.getServerSocket().send(heartBeat);
             }
         } catch (IOException e) {

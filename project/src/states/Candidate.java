@@ -6,8 +6,11 @@ import java.net.DatagramSocket;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import com.google.gson.Gson;
+
 import context.Context;
-import messages.ServerRPC;
+import utils.Message;
 import utils.Constants;
 import utils.Host;
 import utils.JSONUtils;
@@ -30,10 +33,9 @@ public class Candidate {
     public static void sendPostulation(Context context) {
         try {
             for (Host host : context.getAllHosts()) {
-                ServerRPC postulationRPCMessage = new ServerRPC(context.getPort(), host.getPort(), context.getTerm(),
-                        Constants.POSTULATION);
-                DatagramPacket postulationRPC = new DatagramPacket(postulationRPCMessage.toJSON().getBytes(),
-                        postulationRPCMessage.toJSON().length(), host.getAddress(), host.getPort());
+                Message postulationMessage = new Message(context.getTerm(), Constants.POSTULATION, context.getPort(), host.getPort(), null);
+                DatagramPacket postulationRPC = new DatagramPacket(postulationMessage.toJson().getBytes(),
+                        postulationMessage.toJson().length(), host.getAddress(), host.getPort());
                 context.getServerSocket().send(postulationRPC);
             }
         } catch (IOException e) {
@@ -73,7 +75,11 @@ public class Candidate {
                 e.printStackTrace();
                 return State.CANDIDATE;
             }
-            ServerRPC serverResponse = JSONUtils.getServerRPC(acceptorResponse);
+
+            Gson gson = new Gson();
+            String serverResponseStr = JSONUtils.parseDatagramPacket(acceptorResponse);
+            Message serverResponse = gson.fromJson(serverResponseStr, Message.class);
+            
             switch (serverResponse.getType()) {
             case Constants.VOTE_OK:
                 votes++;

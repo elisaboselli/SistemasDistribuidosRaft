@@ -7,8 +7,10 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Random;
 
+import com.google.gson.Gson;
+
 import context.Context;
-import messages.ServerRPC;
+import utils.Message;
 import utils.Constants;
 import utils.JSONUtils;
 
@@ -40,8 +42,11 @@ public class Follower {
         // poner el timeout en 0
     }
 
-    private static void processMessage(Context context, DatagramPacket getMessage) {
-        ServerRPC serverResponse = JSONUtils.getServerRPC(getMessage);
+    private static void processMessage(Context context, DatagramPacket datagramPacket) {
+        Gson gson = new Gson();
+        String serverResponseStr = JSONUtils.parseDatagramPacket(datagramPacket);
+        Message serverResponse = gson.fromJson(serverResponseStr, Message.class);
+        
         switch (serverResponse.getType()) {
         case Constants.POSTULATION:
             if (context.getTerm() < serverResponse.getTerm()) {

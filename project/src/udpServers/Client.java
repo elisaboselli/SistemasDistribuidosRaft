@@ -1,4 +1,4 @@
-package udp;
+package udpServers;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import messages.Message;
+import utils.Message;
 import utils.Constants;
 import utils.JSONUtils;
 
