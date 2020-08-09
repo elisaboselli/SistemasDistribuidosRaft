@@ -5,13 +5,14 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import com.google.gson.Gson;
 
-import messages.HeartBeat;
+import utils.Message;
 import utils.Constants;
 
 public class HeartBeatSenderExample {
@@ -25,7 +26,7 @@ public class HeartBeatSenderExample {
 
         try {
 
-            System.out.println("\n---------- BEGIN SERVER ----------\n");
+            System.out.println("\n---------- BEGIN LEADER SERVER ----------\n");
 
             // Open UDP Socket
             int localPort = 6790;
@@ -41,19 +42,19 @@ public class HeartBeatSenderExample {
             };
 
             heart_beat_timer = new Timer();
-            heart_beat_timer.schedule(timerTask, 0, Constants.HEART_BEAT);
+            heart_beat_timer.scheduleAtFixedRate(timerTask, 0, Constants.HEART_BEAT);
 
-            while (heartBeatCount < 5){
+            while (heartBeatCount < 2){
                 // Receive request
                 byte[] buffer = new byte[1000];
-                DatagramPacket request = new DatagramPacket(buffer, buffer.length);
-                socketUDP.receive(request);
+                DatagramPacket response = new DatagramPacket(buffer, buffer.length);
+                socketUDP.receive(response);
 
                 // Parse request
                 Gson gson = new Gson();
-                String requestMessageStr = parseDatagramPacket(request);
-                MessageExample messageExample = gson.fromJson(requestMessageStr, MessageExample.class);
-                messageExample.log(localPort);
+                String responseMessageStr = parseDatagramPacket(response);
+                Message responseMsg = gson.fromJson(responseMessageStr, Message.class);
+                responseMsg.log(localPort);
 
                 heartBeatCount++;
             }
@@ -77,13 +78,13 @@ public class HeartBeatSenderExample {
     }
 
     private static void sendHeartBeat(DatagramSocket datagramSocket, int localPort, int remotePort) {
-        InetAddress localhost;
         try {
-            localhost = InetAddress.getByName("localhost");
-        HeartBeat heartBeatMessage = new HeartBeat(localPort, remotePort);
-        DatagramPacket heartBeat = new DatagramPacket(heartBeatMessage.toJSON().getBytes(), heartBeatMessage.toJSON().length(), localhost, remotePort);
-        datagramSocket.send(heartBeat);
-        heartBeatMessage.log(localPort);
+            List<String> params = new ArrayList<String>();
+            InetAddress localhost = InetAddress.getByName("localhost");
+            Message heartBeatMessage = new Message(0, Constants.HEART_BEAT_MESSAGE, localPort, remotePort,params);
+            DatagramPacket heartBeat = new DatagramPacket(heartBeatMessage.toJson().getBytes(), heartBeatMessage.toJson().length(), localhost, remotePort);
+            datagramSocket.send(heartBeat);
+            heartBeatMessage.log(localPort);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -14,7 +14,7 @@ import java.util.TimerTask;
 import com.google.gson.Gson;
 
 import context.Context;
-import messages.Message;
+import utils.Message;
 import utils.Constants;
 import utils.JSONUtils;
 
