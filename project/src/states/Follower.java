@@ -3,7 +3,7 @@ package states;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.SocketException;
+//import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +35,9 @@ public class Follower {
         Random random = new Random();
 
         // Set timeout
-        timeout = random.ints(1, Constants.MIN_TIMEOUT, Constants.MAX_TIMEOUT).findFirst().getAsInt();
+        // timeout = random.ints(1, Constants.MIN_TIMEOUT,
+        // Constants.MAX_TIMEOUT).findFirst().getAsInt();
+        timeout = 15000;
         timer = new Timer();
         timer.schedule(new StopFollowingTask(), timeout);
 
@@ -69,7 +71,8 @@ public class Follower {
 
             // Process heartbeat message
             case Constants.HEART_BEAT_MESSAGE:
-                restarTimeout();
+                System.out.println("Hearbeat message received from " + request.getPort());
+                restartTimeout();
                 break;
 
             // Process client message
@@ -83,13 +86,14 @@ public class Follower {
         }
     }
 
-    private static void restarTimeout() {
+    private static void restartTimeout() {
         timer.cancel();
         timer = new Timer();
         timer.schedule(new StopFollowingTask(), timeout);
     }
 
     private static State stopFollowing() {
+        System.out.println("Heartbeat not found, becoming candidate");
         return State.CANDIDATE;
     }
 
@@ -103,7 +107,7 @@ public class Follower {
 
             // Prepare response
             String messageType = isPositiveVote ? Constants.VOTE_OK : Constants.VOTE_REJECT;
-            List<String> messageParams = Arrays.asList(messageType + " for term " + 1);
+            List<String> messageParams = Arrays.asList(messageType + " for term " + requestTerm);
             Message responseMessage = new Message(0, messageType, context.getPort(), voteRequest.getPort(),
                     messageParams);
 

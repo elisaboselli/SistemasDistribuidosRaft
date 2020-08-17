@@ -15,7 +15,7 @@ public class Leader {
     static State execute(Context context) {
         // try {
         // Datagram Socket
-        //byte[] buffer = new byte[1000];
+        // byte[] buffer = new byte[1000];
         // Heart Beat Sender
         Timer timer = new Timer();
         TimerTask hearbeat = new TimerTask() {
@@ -24,7 +24,7 @@ public class Leader {
                 Leader.sendHeartBeat(context);
             }
         };
-        timer.schedule(hearbeat, Constants.HEART_BEAT);
+        timer.scheduleAtFixedRate(hearbeat, 0, Constants.HEART_BEAT);
         // TODO puede llegar un mensaje de un candidato con un termino mayor
         // TODO puede
         /*
@@ -37,7 +37,12 @@ public class Leader {
          * catch (SocketException e) { System.out.println("Socket: " + e.getMessage());
          * } catch (IOException e) { System.out.println("IO: " + e.getMessage()); }
          */
-        return newEvent();
+
+        while (true) {
+
+        }
+
+        // return newEvent();
     }
 
     static State newEvent() {
@@ -47,14 +52,17 @@ public class Leader {
     public static void sendHeartBeat(Context context) {
         try {
             for (Host host : context.getAllHosts()) {
-                Message heartBeatMessage = new Message(0, Constants.HEART_BEAT_MESSAGE, context.getPort(), host.getPort(), null);
+                Message heartBeatMessage = new Message(0, Constants.HEART_BEAT_MESSAGE, context.getPort(),
+                        host.getPort(), null);
                 DatagramPacket heartBeat = new DatagramPacket(heartBeatMessage.toJson().getBytes(),
                         heartBeatMessage.toJson().length(), host.getAddress(), host.getPort());
                 context.getServerSocket().send(heartBeat);
+                System.out.println("Send heartbeat to " + host.getPort());
             }
         } catch (IOException e) {
             System.out.println("IO Exception: " + e.getMessage());
         }
+        System.out.println("");
     }
 
 }

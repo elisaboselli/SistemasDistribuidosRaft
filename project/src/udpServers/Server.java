@@ -11,8 +11,12 @@ public class Server {
     static Context context;
 
     public static void main(String args[]) {
-        state = State.FOLLOWER;
         int port = Integer.parseInt(args[0]);
+        if (port == 6789) {
+            state = State.LEADER;
+        } else {
+            state = State.FOLLOWER;
+        }
         try {
             context = new Context(port);
             while (state != State.HALT) {

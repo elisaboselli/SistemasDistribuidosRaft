@@ -3,14 +3,14 @@ package utils;
 public final class Constants {
 
     // private void Constants(){}
-
-    public static final String ALL_SERVERS_FILE = "textFiles/allServers.txt";
+    public static final String ALL_SERVERS_FILE = "project/textFiles/allServers.txt";
     public static final int SERVERS_QTY = 5;
     public static final int QUORUM = (SERVERS_QTY / 2) + 1;
 
     public static final int MIN_TIMEOUT = 60000; // 1 minute
     public static final int MAX_TIMEOUT = 120000; // 2 minutes
-    public static final int HEART_BEAT = 10000; // 10 seconds
+    // public static final int HEART_BEAT = 10000; // 10 seconds
+    public static final int HEART_BEAT = 5000; // 5 seconds
 
     public static final int NO_TERM = 0;
 
