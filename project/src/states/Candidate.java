@@ -23,6 +23,7 @@ public class Candidate {
 
     static State execute(Context context) {
         context.incrementTerm();
+        System.out.println("Im candidate! (Term " + context.getTerm() + ")");
         sendPostulation(context);
         Timer timeout = setTimeout(context);
         State nextState = expectVotes(context);

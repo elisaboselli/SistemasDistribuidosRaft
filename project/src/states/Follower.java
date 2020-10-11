@@ -3,8 +3,10 @@ package states;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-//import java.net.SocketException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -23,23 +25,22 @@ public class Follower {
     private static Timer timer;
     private static int timeout;
 
-    static class StopFollowingTask extends TimerTask {
-        public void run() {
-            stopFollowing();
-        }
-    }
-
     static State execute(Context context) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println("START >>  [" + dtf.format(now) + "]");
 
         DatagramSocket socket = context.getServerSocket();
-        Random random = new Random();
+        try {
+            socket.setSoTimeout(10000);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
 
         // Set timeout
+        // Random random = new Random();
         // timeout = random.ints(1, Constants.MIN_TIMEOUT,
         // Constants.MAX_TIMEOUT).findFirst().getAsInt();
-        timeout = 15000;
-        timer = new Timer();
-        timer.schedule(new StopFollowingTask(), timeout);
 
         // Wait for messages
         while (true) {
@@ -49,6 +50,9 @@ public class Follower {
                 socket.receive(request);
                 processMessage(context, request);
             } catch (SocketTimeoutException e) {
+                dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+                now = LocalDateTime.now();
+                System.out.println("timeout >>  [" + dtf.format(now) + "]");
                 return State.CANDIDATE;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -71,8 +75,10 @@ public class Follower {
 
             // Process heartbeat message
             case Constants.HEART_BEAT_MESSAGE:
-                System.out.println("Hearbeat message received from " + request.getPort());
-                restartTimeout();
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+                LocalDateTime now = LocalDateTime.now();
+                System.out.println("Hearbeat message received from " + request.getPort()
+                        + " [" + dtf.format(now) + "]");
                 break;
 
             // Process client message
@@ -84,17 +90,6 @@ public class Follower {
             default:
                 // Process message
         }
-    }
-
-    private static void restartTimeout() {
-        timer.cancel();
-        timer = new Timer();
-        timer.schedule(new StopFollowingTask(), timeout);
-    }
-
-    private static State stopFollowing() {
-        System.out.println("Heartbeat not found, becoming candidate");
-        return State.CANDIDATE;
     }
 
     static private void sendVote(Context context, DatagramPacket voteRequest, int requestTerm) {
