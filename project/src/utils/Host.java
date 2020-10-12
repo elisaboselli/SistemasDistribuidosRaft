@@ -11,26 +11,35 @@ public class Host {
 
     private InetAddress address;
     private int port;
+    private Boolean isLeader;
 
-    public Host(InetAddress _address, int _port) {
-        this.address = _address;
-        this.port = _port;
+    public Host(InetAddress address, int port) {
+        this.address = address;
+        this.port = port;
     }
 
     public InetAddress getAddress() {
         return this.address;
     }
 
-    public void setAddress(InetAddress _address) {
-        this.address = _address;
+    public void setAddress(InetAddress address) {
+        this.address = address;
     }
 
     public int getPort() {
         return this.port;
     }
 
-    public void setPort(int _port) {
-        this.port = _port;
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void setIsLeader(Boolean isLeader){
+        this.isLeader = isLeader;
+    }
+
+    public Boolean getIsLeader() {
+        return this.isLeader;
     }
 
     @Override

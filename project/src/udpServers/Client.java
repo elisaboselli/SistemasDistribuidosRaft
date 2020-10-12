@@ -58,7 +58,7 @@ public class Client {
 
                 // Prepare request message
                 Message requestMessage = new Message(Constants.NO_TERM, messageType, localPort, serverPort, params);
-                requestMessage.log(localPort);
+                requestMessage.log(localPort, false);
 
                 // Prepare datagram package
                 String requestMessageStr = requestMessage.toJson();
@@ -75,7 +75,7 @@ public class Client {
 
                 // Parse Response
                 Message responseMessage = JSONUtils.messageFromJson(response);
-                responseMessage.log(localPort);
+                responseMessage.log(localPort, true);
 
                 // Prepare for next operation
                 nextOp = getNextOperationFromInput(scan);

@@ -24,7 +24,7 @@ public class Context {
         this.term = 0;
         this.port = port;
         this.leader = null;
-        this.allHosts = ObtainAllHosts();
+        this.allHosts = obtainAllHosts();
         try {
             this.serverSocket = new DatagramSocket(port);
         } catch (SocketException e) {
@@ -33,7 +33,7 @@ public class Context {
         }
     }
 
-    private List<Host> ObtainAllHosts() {
+    private List<Host> obtainAllHosts() {
         List<Host> hosts = JSONUtils.readHostFile(Constants.ALL_SERVERS_FILE);
         return hosts.stream().filter(host -> host.getPort() != this.port).collect(Collectors.toList());
     }

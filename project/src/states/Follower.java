@@ -9,21 +9,19 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import com.google.gson.Gson;
 
 import context.Context;
+import utils.Host;
 import utils.Message;
 import utils.Constants;
-import utils.JSONUtils;
+
+import static utils.JSONUtils.parseDatagramPacket;
 
 public class Follower {
 
-    private static Timer timer;
-    private static int timeout;
+    private static int timeout = 10000;
 
     static State execute(Context context) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -32,15 +30,10 @@ public class Follower {
 
         DatagramSocket socket = context.getServerSocket();
         try {
-            socket.setSoTimeout(10000);
+            socket.setSoTimeout(timeout);
         } catch (SocketException e) {
             e.printStackTrace();
         }
-
-        // Set timeout
-        // Random random = new Random();
-        // timeout = random.ints(1, Constants.MIN_TIMEOUT,
-        // Constants.MAX_TIMEOUT).findFirst().getAsInt();
 
         // Wait for messages
         while (true) {
@@ -63,8 +56,13 @@ public class Follower {
 
     private static void processMessage(Context context, DatagramPacket request) {
         Gson gson = new Gson();
-        String serverRequestStr = JSONUtils.parseDatagramPacket(request);
+        String serverRequestStr = parseDatagramPacket(request);
         Message serverRequest = gson.fromJson(serverRequestStr, Message.class);
+
+        // Log Received Message
+        String requestMessageStr = parseDatagramPacket(request);
+        Message requestMessage = gson.fromJson(requestMessageStr, Message.class);
+        requestMessage.log(context.getPort(), true);
 
         switch (serverRequest.getType()) {
 
@@ -75,41 +73,63 @@ public class Follower {
 
             // Process heartbeat message
             case Constants.HEART_BEAT_MESSAGE:
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
-                LocalDateTime now = LocalDateTime.now();
-                System.out.println("Hearbeat message received from " + request.getPort()
-                        + " [" + dtf.format(now) + "]");
+                Host leaderHost = new Host(request.getAddress(), request.getPort());
+                context.setLeader(leaderHost);
                 break;
 
             // Process client message
             case Constants.CLIENT_MESSAGE:
-                // Pasar el mensaje al lider
+                // TODO: Pasar el mensaje al lider o responder con la ip del lider
+                break;
+
+            case Constants.CLIENT_SET_MESSAGE:
+                // TODO: Responder con la ip del lider
+                rejectSetMessage(context, request);
+                break;
+
+            case Constants.CLIENT_GET_MESSAGE:
+                // TODO: Acá debería responder ?
                 break;
 
             // TODO: Other messages
             default:
-                // Process message
+                //Process message
         }
     }
 
     static private void sendVote(Context context, DatagramPacket voteRequest, int requestTerm) {
-        try {
-            // Update term if needed
-            boolean isPositiveVote = context.getTerm() < requestTerm;
-            if (isPositiveVote) {
-                context.setTerm(requestTerm);
-            }
+        // TODO: Check requestTerm >= contextTerm && requestIndex >= contextIndex
 
-            // Prepare response
-            String messageType = isPositiveVote ? Constants.VOTE_OK : Constants.VOTE_REJECT;
-            List<String> messageParams = Arrays.asList(messageType + " for term " + requestTerm);
-            Message responseMessage = new Message(0, messageType, context.getPort(), voteRequest.getPort(),
-                    messageParams);
+        // Update term if needed
+        boolean isPositiveVote = context.getTerm() < requestTerm;
+        if (isPositiveVote) {
+            context.setTerm(requestTerm);
+        }
+
+        // Prepare & send response
+        String messageType = isPositiveVote ? Constants.VOTE_OK : Constants.VOTE_REJECT;
+        List<String> messageParams = Arrays.asList(messageType + " for term " + requestTerm);
+        sendMessage(context, voteRequest, messageType, messageParams);
+    }
+
+    static private void rejectSetMessage(Context context, DatagramPacket setRequest) {
+        // Prepare & send response
+        String messageType = Constants.NOT_LEADER;
+        List<String> messageParams = Arrays.asList(messageType, context.getLeader().getAddress().toString(),
+                String.valueOf(context.getLeader().getPort()));
+        sendMessage(context, setRequest, messageType, messageParams);
+    }
+
+    static private void sendMessage(Context context, DatagramPacket setRequest, String messageType, List<String> messageParams) {
+        try {
+
+            Message responseMessage = new Message(0, messageType, context.getPort(), setRequest.getPort(), messageParams);
+            responseMessage.log(context.getPort(), false);
 
             // Prepare datagram packet
             String responseMessageStr = responseMessage.toJson();
             DatagramPacket response = new DatagramPacket(responseMessageStr.getBytes(), responseMessageStr.length(),
-                    voteRequest.getAddress(), voteRequest.getPort());
+                setRequest.getAddress(), setRequest.getPort());
 
             // Send response
             context.getServerSocket().send(response);

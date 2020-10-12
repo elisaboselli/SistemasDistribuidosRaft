@@ -36,4 +36,5 @@ public final class Constants {
     public static final String POSTULATION = "postulation";
     public static final String VOTE_OK = "vote_ok";
     public static final String VOTE_REJECT = "vote_reject";
+    public static final String NOT_LEADER = "Not leader to process set command";
 }
