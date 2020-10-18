@@ -1,5 +1,6 @@
 package context;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -19,17 +20,32 @@ public class Context {
     private List<Host> allHosts;
     private Host leader;
     private int term;
+    private File logFile;
+    private int timeout;
 
-    public Context(int port) throws SocketException {
+    public Context(int port, File logFile) throws SocketException {
         this.term = 0;
         this.port = port;
         this.leader = null;
         this.allHosts = obtainAllHosts();
+        this.logFile = logFile;
         try {
             this.serverSocket = new DatagramSocket(port);
         } catch (SocketException e) {
             System.out.println("Socket exception: " + e.getMessage());
             throw e;
+        }
+
+        switch (port) {
+            case 6789:
+                this.timeout = 60000; // 1 minute
+                break;
+            case 6788:
+                this.timeout = 90000; // 1,5 minutes
+                break;
+            case 6787:
+                this.timeout = 15000; // 15 seconds
+                break;
         }
     }
 
@@ -94,7 +110,30 @@ public class Context {
         this.leader = leader;
     }
 
+    public int getTimeout() {
+        return this.timeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
     public static int getWaitTime() {
         return Constants.MIN_TIMEOUT;
+    }
+
+    public void restartSocket() {
+        try {
+            this.serverSocket = new DatagramSocket(port);
+        } catch (SocketException e) {
+            System.out.println("Socket exception: " + e.getMessage());
+        }
+    }
+
+    public void show() {
+        System.out.println("Port: " + this.port);
+        System.out.println("Leader: " + this.leader);
+        System.out.println("Term: " + this.term);
+        System.out.println("Time out: " + this.timeout);
     }
 }

@@ -24,13 +24,15 @@ public class Follower {
     private static int timeout = 10000;
 
     static State execute(Context context) {
+        System.out.println("---------- FOLLOWER ----------");
+
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         System.out.println("START >>  [" + dtf.format(now) + "]");
 
         DatagramSocket socket = context.getServerSocket();
         try {
-            socket.setSoTimeout(timeout);
+            socket.setSoTimeout(context.getTimeout());
         } catch (SocketException e) {
             e.printStackTrace();
         }
