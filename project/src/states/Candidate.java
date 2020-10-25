@@ -24,6 +24,7 @@ public class Candidate {
 
     private static State nextState;
     private static List<Host> voters;
+    private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     static State newtEvent() {
         return null;
@@ -32,7 +33,6 @@ public class Candidate {
     static State execute(Context context) {
 
         System.out.println("---------- CANDIDATE ----------");
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         System.out.println("START >>  [" + dtf.format(now) + "]");
 
@@ -48,12 +48,13 @@ public class Candidate {
                 Candidate.sendPostulation2(voters, context);
             }
         };
-        timer.scheduleAtFixedRate(postulationTask, 0, 10000);
+        timer.scheduleAtFixedRate(postulationTask, 0, 5000);
 
         //sendPostulation(context);
         Timer timeout = setTimeout(context);
-        nextState = expectVotes(context);
+        nextState = expectVotes(context, now);
         timeout.cancel();
+        postulationTask.cancel();
         return nextState;
     }
 
@@ -84,7 +85,7 @@ public class Candidate {
         return timer;
     }
 
-    private static State expectVotes(Context context) {
+    private static State expectVotes(Context context, LocalDateTime now) {
         int votes = 1;
         DatagramSocket socketUDP = context.getServerSocket();
         while (votes < Constants.QUORUM) {
@@ -93,17 +94,18 @@ public class Candidate {
             try {
                 socketUDP.receive(acceptorResponse);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                // entra aca si el socket fue cerrado
-                e.printStackTrace();
-                //return State.CANDIDATE;
+                // e.printStackTrace();
+                now = LocalDateTime.now();
+                System.out.println("timeout >>  [" + dtf.format(now) + "]");
                 context.restartSocket();
-                return State.FOLLOWER;
+                return State.CANDIDATE;
             }
 
             Gson gson = new Gson();
             String serverResponseStr = JSONUtils.parseDatagramPacket(acceptorResponse);
             Message serverResponse = gson.fromJson(serverResponseStr, Message.class);
+
+            serverResponse.log(context.getPort(), true);
             
             switch (serverResponse.getType()) {
 
@@ -135,6 +137,7 @@ public class Candidate {
                 DatagramPacket postulationRPC = new DatagramPacket(postulationMessage.toJson().getBytes(),
                         postulationMessage.toJson().length(), voter.getAddress(), voter.getPort());
                 context.getServerSocket().send(postulationRPC);
+                postulationMessage.log(context.getPort(), false);
             }
         } catch (IOException e) {
             System.out.println("IO Exception: " + e.getMessage());

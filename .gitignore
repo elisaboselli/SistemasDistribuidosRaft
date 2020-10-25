@@ -99,3 +99,4 @@ proyecto/.gitignore
 # Local History for Visual Studio Code
 .history/
 /out
+project/src/META-INF

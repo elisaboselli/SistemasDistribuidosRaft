@@ -2,6 +2,8 @@ package states;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,6 +15,14 @@ import utils.Host;
 public class Leader {
 
     static State execute(Context context) {
+
+        System.out.println("---------- LEADER ----------");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println("START >>  [" + dtf.format(now) + "]");
+
+        System.out.println("Im Leader! (Term " + context.getTerm() + ")");
+
         // try {
         // Datagram Socket
         // byte[] buffer = new byte[1000];

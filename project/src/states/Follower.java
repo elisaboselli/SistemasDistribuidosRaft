@@ -77,6 +77,7 @@ public class Follower {
             case Constants.HEART_BEAT_MESSAGE:
                 Host leaderHost = new Host(request.getAddress(), request.getPort());
                 context.setLeader(leaderHost);
+                //System.out.println("New Leader >> " + context.getLeader().toString());
                 break;
 
             // Process client message
@@ -106,6 +107,7 @@ public class Follower {
         boolean isPositiveVote = context.getTerm() < requestTerm;
         if (isPositiveVote) {
             context.setTerm(requestTerm);
+            System.out.println("New term >> " + context.getTerm());
         }
 
         // Prepare & send response

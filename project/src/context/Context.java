@@ -44,7 +44,7 @@ public class Context {
                 this.timeout = 90000; // 1,5 minutes
                 break;
             case 6787:
-                this.timeout = 15000; // 15 seconds
+                this.timeout = 10000; // 10 seconds
                 break;
         }
     }
