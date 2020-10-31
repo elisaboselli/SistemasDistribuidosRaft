@@ -2,13 +2,11 @@ package utils;
 
 import java.io.*;
 import java.net.DatagramPacket;
-import java.nio.Buffer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.google.gson.Gson;
-import com.sun.tools.internal.jxc.ap.Const;
 
 public final class JSONUtils {
 
@@ -16,7 +14,7 @@ public final class JSONUtils {
     }
 
     public static List<Host> readHostFile(String filename) {
-        String jsonHosts = readJSONFile(Constants.FILES_PATH +filename);
+        String jsonHosts = readJSONFile(Constants.FILES_PATH + filename);
         return Host.fromJSONArray(jsonHosts);
     }
 
@@ -42,13 +40,15 @@ public final class JSONUtils {
         }
     }
 
-    public static String readJSONFile(String fileName) {
+    private static String readJSONFile(String fileName) {
         String jsonStr = "";
-        String line = null;
+        String line;
 
         try {
+
             FileReader fileReader = new FileReader(fileName);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
+
             while ((line = bufferedReader.readLine()) != null) {
                 jsonStr = jsonStr.concat(line + ",");
             }
@@ -86,7 +86,7 @@ public final class JSONUtils {
 
     public static File createLogFile(String fileName) {
 
-        File file = new File(Constants.FILES_PATH + fileName);
+        File file = new File(Constants.FILES_PATH + getFileName(fileName));
         try {
             file.createNewFile();
         } catch (IOException e) {

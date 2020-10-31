@@ -2,8 +2,8 @@ package utils;
 
 public final class Constants {
 
-    // private void Constants(){}
-    public static final String FILES_PATH = "project/textFiles/";
+    public static final String FILES_PATH = "textFiles/";
+
     public static final String ALL_SERVERS_FILE = "allServers.txt";
     public static final int SERVERS_QTY = 3;
     public static final int QUORUM = (SERVERS_QTY / 2) + 1;
