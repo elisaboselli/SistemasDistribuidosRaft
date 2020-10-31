@@ -51,24 +51,31 @@ public class Message {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
 
+        System.out.println("--------------------------------------------------------------\n");
+
+        // Message type
         if (received) {
             System.out.println("Message Received - Type: " + this.type);
         } else {
             System.out.println("Message Sent - Type: " + this.type);
         }
 
+        // Sent or received
         if (localPort == from) {
             System.out.println("Sent to: " + this.to + " [" + dtf.format(now) + "]");
         } else {
             System.out.println("Received from: " + this.from + " [" + dtf.format(now) + "]");
         }
+
+        // Params
+        System.out.print("Params: ");
         if( params != null) {
-            System.out.print("Params: ");
             for (String param : params) {
                 System.out.print(param + " ");
             }
         }
-        System.out.println("\n\n--------------------------------------------------------------\n");
+
+        System.out.print("\n\n");
     }
 
 }

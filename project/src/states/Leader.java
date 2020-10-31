@@ -16,12 +16,12 @@ public class Leader {
 
     static State execute(Context context) {
 
-        System.out.println("---------- LEADER ----------");
+        System.out.println("--------------------------- LEADER ---------------------------");
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        System.out.println("START >>  [" + dtf.format(now) + "]");
+        System.out.println("START >>  [" + dtf.format(now) + "]\n");
 
-        System.out.println("Im Leader! (Term " + context.getTerm() + ")");
+        context.show();
 
         // try {
         // Datagram Socket
@@ -67,12 +67,11 @@ public class Leader {
                 DatagramPacket heartBeat = new DatagramPacket(heartBeatMessage.toJson().getBytes(),
                         heartBeatMessage.toJson().length(), host.getAddress(), host.getPort());
                 context.getServerSocket().send(heartBeat);
-                System.out.println("Send heartbeat to " + host.getPort());
+                heartBeatMessage.log(context.getPort(), false);
             }
         } catch (IOException e) {
             System.out.println("IO Exception: " + e.getMessage());
         }
-        System.out.println("");
     }
 
 }

@@ -24,11 +24,11 @@ public class Follower {
     private static int timeout = 10000;
 
     static State execute(Context context) {
-        System.out.println("---------- FOLLOWER ----------");
+        System.out.println("\n-------------------------- FOLLOWER --------------------------");
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        System.out.println("START >>  [" + dtf.format(now) + "]");
+        System.out.println("START >>  [" + dtf.format(now) + "]\n");
 
         DatagramSocket socket = context.getServerSocket();
         try {
@@ -107,7 +107,9 @@ public class Follower {
         boolean isPositiveVote = context.getTerm() < requestTerm;
         if (isPositiveVote) {
             context.setTerm(requestTerm);
-            System.out.println("New term >> " + context.getTerm());
+            Host leaderHost = new Host(voteRequest.getAddress(), voteRequest.getPort());
+            context.setLeader(leaderHost);
+            context.show();
         }
 
         // Prepare & send response

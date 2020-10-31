@@ -19,13 +19,13 @@ public final class JSONUtils {
     }
 
     public static List<Log> readLogFile(String fileName) {
-        String jsonLogs = readJSONFile(Constants.FILES_PATH + fileName);
+        String jsonLogs = readJSONFile(Constants.FILES_PATH + Constants.LOGS_PATH + fileName);
         return Log.fromJSONArray(jsonLogs);
     }
 
     public static void writeLogFile(String fileName, String newLog) {
         try {
-            FileWriter file = new FileWriter(Constants.FILES_PATH + fileName, true);
+            FileWriter file = new FileWriter(Constants.FILES_PATH + Constants.LOGS_PATH + fileName, true);
             BufferedWriter bufferedWriter = new BufferedWriter(file);
             bufferedWriter.write(newLog);
             bufferedWriter.newLine();
@@ -86,7 +86,7 @@ public final class JSONUtils {
 
     public static File createLogFile(String fileName) {
 
-        File file = new File(Constants.FILES_PATH + getFileName(fileName));
+        File file = new File(Constants.FILES_PATH + Constants.LOGS_PATH + getFileName(fileName));
         try {
             file.createNewFile();
         } catch (IOException e) {

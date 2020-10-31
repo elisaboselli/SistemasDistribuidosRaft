@@ -3,6 +3,7 @@ package utils;
 public final class Constants {
 
     public static final String FILES_PATH = "textFiles/";
+    public static final String LOGS_PATH = "logs/";
 
     public static final String ALL_SERVERS_FILE = "allServers.txt";
     public static final int SERVERS_QTY = 3;

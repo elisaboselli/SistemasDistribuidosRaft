@@ -131,6 +131,7 @@ public class Context {
     }
 
     public void show() {
+        System.out.println("--------------------------- CONTEXT --------------------------");
         System.out.println("Port: " + this.port);
         System.out.println("Leader: " + this.leader);
         System.out.println("Term: " + this.term);

@@ -32,12 +32,12 @@ public class Candidate {
 
     static State execute(Context context) {
 
-        System.out.println("---------- CANDIDATE ----------");
+        System.out.println("\n-------------------------- CANDIDATE -------------------------");
         LocalDateTime now = LocalDateTime.now();
-        System.out.println("START >>  [" + dtf.format(now) + "]");
+        System.out.println("START >>  [" + dtf.format(now) + "]\n");
 
         context.incrementTerm();
-        System.out.println("Im candidate! (Term " + context.getTerm() + ")");
+        context.show();
 
         voters = context.getAllHosts();
 
