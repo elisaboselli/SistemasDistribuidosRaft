@@ -3,32 +3,21 @@ package states;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 
 import context.Context;
-import utils.Message;
-import utils.Constants;
-import utils.Host;
-import utils.JSONUtils;
+import utils.*;
 
 public class Candidate {
 
     private static State nextState;
     private static List<Host> voters;
     private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
-
-    static State newtEvent() {
-        return null;
-    }
 
     static State execute(Context context) {
 
@@ -45,7 +34,7 @@ public class Candidate {
         TimerTask postulationTask = new TimerTask() {
             @Override
             public void run() {
-                Candidate.sendPostulation2(voters, context);
+                SendMessageUtils.sendPostulation(voters, context);
             }
         };
         timer.scheduleAtFixedRate(postulationTask, 0, 5000);
@@ -56,19 +45,6 @@ public class Candidate {
         timeout.cancel();
         postulationTask.cancel();
         return nextState;
-    }
-
-    public static void sendPostulation(Context context) {
-        try {
-            for (Host host : context.getAllHosts()) {
-                Message postulationMessage = new Message(context.getTerm(), Constants.POSTULATION, context.getPort(), host.getPort(), null);
-                DatagramPacket postulationRPC = new DatagramPacket(postulationMessage.toJson().getBytes(),
-                        postulationMessage.toJson().length(), host.getAddress(), host.getPort());
-                context.getServerSocket().send(postulationRPC);
-            }
-        } catch (IOException e) {
-            System.out.println("IO Exception: " + e.getMessage());
-        }
     }
 
     private static Timer setTimeout(Context context) {
@@ -122,6 +98,10 @@ public class Candidate {
                 }
                 break;
 
+            case Constants.POSTULATION:
+                SendMessageUtils.sendVote(context, acceptorResponse, serverResponse.getTerm());
+                return State.FOLLOWER;
+
             default:
                 // TODO
             }
@@ -129,18 +109,4 @@ public class Candidate {
         return State.LEADER;
     }
 
-    public static void sendPostulation2(List<Host> voters, Context context) {
-        try {
-            for (Host voter : voters) {
-                Message postulationMessage = new Message(context.getTerm(), Constants.POSTULATION, context.getPort(),
-                        voter.getPort(), null);
-                DatagramPacket postulationRPC = new DatagramPacket(postulationMessage.toJson().getBytes(),
-                        postulationMessage.toJson().length(), voter.getAddress(), voter.getPort());
-                context.getServerSocket().send(postulationRPC);
-                postulationMessage.log(context.getPort(), false);
-            }
-        } catch (IOException e) {
-            System.out.println("IO Exception: " + e.getMessage());
-        }
-    }
 }

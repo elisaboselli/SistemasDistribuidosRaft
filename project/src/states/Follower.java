@@ -7,15 +7,11 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
 
 import com.google.gson.Gson;
 
 import context.Context;
-import utils.Host;
-import utils.Message;
-import utils.Constants;
+import utils.*;
 
 import static utils.JSONUtils.parseDatagramPacket;
 
@@ -57,20 +53,15 @@ public class Follower {
     }
 
     private static void processMessage(Context context, DatagramPacket request) {
-        Gson gson = new Gson();
-        String serverRequestStr = parseDatagramPacket(request);
-        Message serverRequest = gson.fromJson(serverRequestStr, Message.class);
 
-        // Log Received Message
-        String requestMessageStr = parseDatagramPacket(request);
-        Message requestMessage = gson.fromJson(requestMessageStr, Message.class);
-        requestMessage.log(context.getPort(), true);
+        Message serverRequest = JSONUtils.messageFromJson(request);
+        serverRequest.log(context.getPort(), true);
 
         switch (serverRequest.getType()) {
 
             // Process postulation message
             case Constants.POSTULATION:
-                sendVote(context, request, serverRequest.getTerm());
+                SendMessageUtils.sendVote(context, request, serverRequest.getTerm());
                 break;
 
             // Process heartbeat message
@@ -87,7 +78,7 @@ public class Follower {
 
             case Constants.CLIENT_SET_MESSAGE:
                 // TODO: Responder con la ip del lider
-                rejectSetMessage(context, request);
+                SendMessageUtils.rejectSetMessage(context, request);
                 break;
 
             case Constants.CLIENT_GET_MESSAGE:
@@ -97,51 +88,6 @@ public class Follower {
             // TODO: Other messages
             default:
                 //Process message
-        }
-    }
-
-    static private void sendVote(Context context, DatagramPacket voteRequest, int requestTerm) {
-        // TODO: Check requestTerm >= contextTerm && requestIndex >= contextIndex
-
-        // Update term if needed
-        boolean isPositiveVote = context.getTerm() < requestTerm;
-        if (isPositiveVote) {
-            context.setTerm(requestTerm);
-            Host leaderHost = new Host(voteRequest.getAddress(), voteRequest.getPort());
-            context.setLeader(leaderHost);
-            context.show();
-        }
-
-        // Prepare & send response
-        String messageType = isPositiveVote ? Constants.VOTE_OK : Constants.VOTE_REJECT;
-        List<String> messageParams = Arrays.asList(messageType + " for term " + requestTerm);
-        sendMessage(context, voteRequest, messageType, messageParams);
-    }
-
-    static private void rejectSetMessage(Context context, DatagramPacket setRequest) {
-        // Prepare & send response
-        String messageType = Constants.NOT_LEADER;
-        List<String> messageParams = Arrays.asList(messageType, context.getLeader().getAddress().toString(),
-                String.valueOf(context.getLeader().getPort()));
-        sendMessage(context, setRequest, messageType, messageParams);
-    }
-
-    static private void sendMessage(Context context, DatagramPacket setRequest, String messageType, List<String> messageParams) {
-        try {
-
-            Message responseMessage = new Message(0, messageType, context.getPort(), setRequest.getPort(), messageParams);
-            responseMessage.log(context.getPort(), false);
-
-            // Prepare datagram packet
-            String responseMessageStr = responseMessage.toJson();
-            DatagramPacket response = new DatagramPacket(responseMessageStr.getBytes(), responseMessageStr.length(),
-                setRequest.getAddress(), setRequest.getPort());
-
-            // Send response
-            context.getServerSocket().send(response);
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

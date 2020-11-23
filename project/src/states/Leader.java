@@ -2,17 +2,19 @@ package states;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import context.Context;
-import utils.Message;
-import utils.Constants;
-import utils.Host;
+import utils.*;
 
 public class Leader {
+
+    private static String state = "leader";
 
     static State execute(Context context) {
 
@@ -23,54 +25,70 @@ public class Leader {
 
         context.show();
 
-        // try {
-        // Datagram Socket
-        // byte[] buffer = new byte[1000];
-        // Heart Beat Sender
+        for (Host host : context.getAllHosts()) {
+            System.out.println(">> Host: " + host.getPort());
+        }
+
+
         Timer timer = new Timer();
         TimerTask hearbeat = new TimerTask() {
             @Override
             public void run() {
-                Leader.sendHeartBeat(context);
+                SendMessageUtils.sendHeartBeat(context);
             }
         };
         timer.scheduleAtFixedRate(hearbeat, 0, Constants.HEART_BEAT);
-        // TODO puede llegar un mensaje de un candidato con un termino mayor
-        // TODO puede
-        /*
-         * while (true) { // Receive a message DatagramPacket receivedMessage = new
-         * DatagramPacket(buffer, buffer.length);
-         * context.getServerSocket().receive(receivedMessage);
-         * 
-         * Message message = JSONUtils.getMessage(receivedMessage);
-         * UDPUtils.logMessageArrive(receivedMessage, message, context.getPort()); } }
-         * catch (SocketException e) { System.out.println("Socket: " + e.getMessage());
-         * } catch (IOException e) { System.out.println("IO: " + e.getMessage()); }
-         */
 
-        while (true) {
-
+        DatagramSocket socket = context.getServerSocket();
+        try {
+            socket.setSoTimeout(context.getTimeout());
+        } catch (SocketException e) {
+            e.printStackTrace();
         }
 
-        // return newEvent();
-    }
+        // Wait for messages
+        while (state.equals("leader")){
+            byte[] buffer = new byte[1000];
+            DatagramPacket request = new DatagramPacket(buffer, buffer.length);
+            try {
+                socket.receive(request);
+                processMessage(context, request);
+            } catch (IOException e) {
+                System.out.println("IO Exception: " + e.getMessage());
+            }
+        }
 
-    static State newEvent() {
+        if(state.equals("follower")) {
+            return State.FOLLOWER;
+        }
+
+        if(state.equals("candidate")) {
+            return State.CANDIDATE;
+        }
+
         return null;
     }
 
-    public static void sendHeartBeat(Context context) {
-        try {
-            for (Host host : context.getAllHosts()) {
-                Message heartBeatMessage = new Message(0, Constants.HEART_BEAT_MESSAGE, context.getPort(),
-                        host.getPort(), null);
-                DatagramPacket heartBeat = new DatagramPacket(heartBeatMessage.toJson().getBytes(),
-                        heartBeatMessage.toJson().length(), host.getAddress(), host.getPort());
-                context.getServerSocket().send(heartBeat);
-                heartBeatMessage.log(context.getPort(), false);
-            }
-        } catch (IOException e) {
-            System.out.println("IO Exception: " + e.getMessage());
+    private static void processMessage(Context context, DatagramPacket request) {
+
+        Message serverRequest = JSONUtils.messageFromJson(request);
+        serverRequest.log(context.getPort(), true);
+
+        switch (serverRequest.getType()) {
+
+            case Constants.POSTULATION:
+                SendMessageUtils.sendVote(context, request, serverRequest.getTerm());
+                state = "follower";
+                break;
+
+            case Constants.HEART_BEAT_MESSAGE:
+                if (serverRequest.getTerm() >= context.getTerm()) {
+                    context.setTerm(serverRequest.getTerm());
+                    state = "follower";
+                }
+                break;
+
+            default:
         }
     }
 
