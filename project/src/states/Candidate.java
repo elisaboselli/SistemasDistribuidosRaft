@@ -26,6 +26,7 @@ public class Candidate {
         System.out.println("START >>  [" + dtf.format(now) + "]\n");
 
         context.incrementTerm();
+        context.setLeader(null);
         context.show();
 
         voters = context.getAllHosts();

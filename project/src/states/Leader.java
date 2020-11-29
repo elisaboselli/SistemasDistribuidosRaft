@@ -23,6 +23,7 @@ public class Leader {
         LocalDateTime now = LocalDateTime.now();
         System.out.println("START >>  [" + dtf.format(now) + "]\n");
 
+        context.setLeader(null);
         context.show();
 
         for (Host host : context.getAllHosts()) {
