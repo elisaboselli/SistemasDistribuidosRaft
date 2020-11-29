@@ -27,5 +27,6 @@ public enum State {
             return HALT;
         }
     };
+
     public abstract State execute(Context context);
 }

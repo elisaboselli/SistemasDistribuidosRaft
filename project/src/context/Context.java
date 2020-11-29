@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,11 +24,11 @@ public class Context {
     private File logFile;
     private int timeout;
 
-    public Context(int port, File logFile) throws SocketException {
+    public Context(int port, File logFile, Boolean isTest) throws SocketException {
         this.term = 0;
         this.port = port;
         this.leader = null;
-        this.allHosts = obtainAllHosts();
+        this.allHosts = obtainAllHosts(isTest);
         this.logFile = logFile;
         try {
             this.serverSocket = new DatagramSocket(port);
@@ -49,7 +50,11 @@ public class Context {
         }
     }
 
-    private List<Host> obtainAllHosts() {
+    private List<Host> obtainAllHosts(Boolean isTest) {
+        if(isTest){
+            return new ArrayList<Host>();
+        }
+
         List<Host> hosts = JSONUtils.readHostFile(Constants.ALL_SERVERS_FILE);
         return hosts.stream().filter(host -> host.getPort() != this.port).collect(Collectors.toList());
     }

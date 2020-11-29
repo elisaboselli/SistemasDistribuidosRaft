@@ -83,6 +83,8 @@ public class Leader {
 
             case Constants.HEART_BEAT_MESSAGE:
                 if (serverRequest.getTerm() >= context.getTerm()) {
+                    Host leaderHost = new Host(request.getAddress(), request.getPort());
+                    context.setLeader(leaderHost);
                     context.setTerm(serverRequest.getTerm());
                     state = "follower";
                 }

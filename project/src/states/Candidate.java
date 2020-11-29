@@ -93,6 +93,8 @@ public class Candidate {
 
             case Constants.HEART_BEAT_MESSAGE:
                 if (serverResponse.getTerm() >= context.getTerm()) {
+                    Host leaderHost = new Host(acceptorResponse.getAddress(), acceptorResponse.getPort());
+                    context.setLeader(leaderHost);
                     context.setTerm(serverResponse.getTerm());
                     return State.FOLLOWER;
                 }

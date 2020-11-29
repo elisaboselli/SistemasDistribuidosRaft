@@ -23,7 +23,7 @@ public class Server {
 
         File logFile = JSONUtils.createLogFile(String.valueOf(port));
         try {
-            context = new Context(port, logFile);
+            context = new Context(port, logFile, false);
             context.show();
             while (state != State.HALT) {
                 state = state.execute(context);
