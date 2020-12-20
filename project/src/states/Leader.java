@@ -6,6 +6,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -90,6 +91,32 @@ public class Leader {
                     state = "follower";
                 }
                 break;
+
+            case Constants.SET:
+
+                // 1º get log
+                Log log = JSONUtils.readLogFile(context.getLogName());
+
+                // 2º create new entry and append
+                List<String> params = serverRequest.getParams();
+                int id = Integer.parseInt(params.get(0));
+                int value = Integer.parseInt(params.get(1));
+
+                Entry entry = new Entry(context, id, value);
+                log.appendEntry(entry);
+                JSONUtils.writeLogFile(context.getLogName(), log.toJson());
+
+                // 3º ask followers to append
+                SendMessageUtils.appendEntry(context, entry);
+                break;
+
+            case Constants.APPEND_OK:
+                /* Update entry quorum
+                if(entry.getQuorum() >= Constants.QUORUM){
+                    entry.commit();
+                }*/
+                break;
+
 
             default:
         }

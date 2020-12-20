@@ -71,17 +71,12 @@ public class Follower {
                 //System.out.println("New Leader >> " + context.getLeader().toString());
                 break;
 
-            // Process client message
-            case Constants.CLIENT_MESSAGE:
+            case Constants.SET:
                 // TODO: Pasar el mensaje al lider o responder con la ip del lider
-                break;
-
-            case Constants.CLIENT_SET_MESSAGE:
-                // TODO: Responder con la ip del lider
                 SendMessageUtils.rejectSetMessage(context, request);
                 break;
 
-            case Constants.CLIENT_GET_MESSAGE:
+            case Constants.GET:
                 // TODO: Acá debería responder ?
                 break;
 

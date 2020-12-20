@@ -19,18 +19,15 @@ public final class Constants {
     // Message Types
     public static final String EMPTY_MESSAGE = "Empty Message";
     public static final String CLIENT_MESSAGE = "Client Message";
-    public static final String CLIENT_GET_MESSAGE = "Client Get Message";
-    public static final String CLIENT_SET_MESSAGE = "Client Set Message";
     public static final String HEART_BEAT_MESSAGE = "Heartbeat Message";
     public static final String SERVER_MESSAGE = "Server Message";
 
-    // Client Message Types
-    public static final String CLIENT_GET = "get";
-    public static final String CLIENT_SET = "set";
 
     // Server Message Types
-    public static final String GET_RESPONSE = "get_response";
-    public static final String SET_RESPONSE = "set_response";
+    public static final String GET = "get";
+    public static final String SET = "set";
+    public static final String APPEND = "append";
+    public static final String APPEND_OK = "append_ok";
     public static final String UPDATE = "update";
     public static final String UPDATE_OK = "update_ok";
     public static final String COMMIT = "commit";

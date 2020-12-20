@@ -9,40 +9,36 @@ import java.util.List;
 
 public class SendMessageUtils {
 
-    static private void sendMessage(Context context, DatagramPacket setRequest, String messageType, List<String> messageParams) {
+    static private void sendMessage(Context context, Host hostTo, String messageType, List<String> messageParams) {
         try {
 
-            Message responseMessage = new Message(0, messageType, context.getPort(), setRequest.getPort(), messageParams);
-            responseMessage.log(context.getPort(), false);
+            // Prepare message
+            Message message = new Message(context.getTerm(), messageType, context.getPort(),
+                    hostTo.getPort(), messageParams);
 
             // Prepare datagram packet
-            String responseMessageStr = responseMessage.toJson();
-            DatagramPacket response = new DatagramPacket(responseMessageStr.getBytes(), responseMessageStr.length(),
-                    setRequest.getAddress(), setRequest.getPort());
+            String messageStr = message.toJson();
+            DatagramPacket messageDP = new DatagramPacket(messageStr.getBytes(), messageStr.length(),
+                    hostTo.getAddress(), hostTo.getPort());
 
             // Send response
-            context.getServerSocket().send(response);
+            context.getServerSocket().send(messageDP);
+            message.log(context.getPort(), false);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    public static void sendHeartBeat(Context context) {
+        for (Host host : context.getAllHosts()) {
+            sendMessage(context, host, Constants.HEART_BEAT_MESSAGE, null);
+        }
+    }
+
     public static void sendPostulation(List<Host> voters, Context context) {
-        try {
-            for (Host voter : voters) {
-                System.out.println(">> Voter: " + voter.getPort());
-            }
-            for (Host voter : voters) {
-                Message postulationMessage = new Message(context.getTerm(), Constants.POSTULATION, context.getPort(),
-                        voter.getPort(), null);
-                DatagramPacket postulationRPC = new DatagramPacket(postulationMessage.toJson().getBytes(),
-                        postulationMessage.toJson().length(), voter.getAddress(), voter.getPort());
-                context.getServerSocket().send(postulationRPC);
-                postulationMessage.log(context.getPort(), false);
-            }
-        } catch (IOException e) {
-            System.out.println("IO Exception: " + e.getMessage());
+        for (Host voter : voters) {
+            sendMessage(context, voter, Constants.POSTULATION, null);
         }
     }
 
@@ -61,29 +57,21 @@ public class SendMessageUtils {
         // Prepare & send response
         String messageType = isPositiveVote ? Constants.VOTE_OK : Constants.VOTE_REJECT;
         List<String> messageParams = Arrays.asList(messageType + " for term " + requestTerm);
-        sendMessage(context, voteRequest, messageType, messageParams);
+        Host host = new Host(voteRequest.getAddress(), voteRequest.getPort());
+        sendMessage(context, host, messageType, messageParams);
     }
 
-    public static void rejectSetMessage(Context context, DatagramPacket setRequest) {
-        // Prepare & send response
-        String messageType = Constants.NOT_LEADER;
-        List<String> messageParams = Arrays.asList(messageType, context.getLeader().getAddress().toString(),
+    public static void rejectSetMessage(Context context, DatagramPacket request) {
+        List<String> messageParams = Arrays.asList(context.getLeader().getAddress().toString(),
                 String.valueOf(context.getLeader().getPort()));
-        sendMessage(context, setRequest, messageType, messageParams);
+        Host host = new Host(request.getAddress(), request.getPort());
+        sendMessage(context, host, Constants.NOT_LEADER, messageParams);
     }
 
-    public static void sendHeartBeat(Context context) {
-        try {
-            for (Host host : context.getAllHosts()) {
-                Message heartBeatMessage = new Message(0, Constants.HEART_BEAT_MESSAGE, context.getPort(),
-                        host.getPort(), null);
-                DatagramPacket heartBeat = new DatagramPacket(heartBeatMessage.toJson().getBytes(),
-                        heartBeatMessage.toJson().length(), host.getAddress(), host.getPort());
-                context.getServerSocket().send(heartBeat);
-                heartBeatMessage.log(context.getPort(), false);
-            }
-        } catch (IOException e) {
-            System.out.println("IO Exception: " + e.getMessage());
+    public static void appendEntry(Context context, Entry entry) {
+        for (Host host : context.getAllHosts()) {
+            List<String> messageParams = Arrays.asList(entry.getIndexStr(), entry.getIdStr(), entry.getValueStr());
+            sendMessage(context, host, Constants.APPEND, messageParams);
         }
     }
 }

@@ -42,18 +42,18 @@ public class Client {
                 String messageType = Constants.EMPTY_MESSAGE;
                 int id, value;
 
-                if (operation.equalsIgnoreCase(Constants.CLIENT_GET)) {
+                if (operation.equalsIgnoreCase(Constants.GET)) {
                     id = getIdFromInput(scan);
                     params.add(String.valueOf(id));
-                    messageType = Constants.CLIENT_GET_MESSAGE;
+                    messageType = Constants.GET;
                 }
 
-                if (operation.equalsIgnoreCase(Constants.CLIENT_SET)) {
+                if (operation.equalsIgnoreCase(Constants.SET)) {
                     id = getIdFromInput(scan);
                     value = getValueFromInput(scan);
                     params.add(String.valueOf(id));
                     params.add(String.valueOf(value));
-                    messageType = Constants.CLIENT_SET_MESSAGE;
+                    messageType = Constants.SET;
                 }
 
                 // Prepare request message
