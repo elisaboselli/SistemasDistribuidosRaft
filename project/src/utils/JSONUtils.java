@@ -18,9 +18,29 @@ public final class JSONUtils {
         return Host.fromJSONArray(jsonHosts);
     }
 
-    public static List<Log> readLogFile(String fileName) {
-        String jsonLogs = readJSONFile(Constants.FILES_PATH + Constants.LOGS_PATH + fileName);
-        return Log.fromJSONArray(jsonLogs);
+    public static Log readLogFile(String fileName) {
+        String longFileName = Constants.FILES_PATH + Constants.LOGS_PATH + fileName;
+        String line;
+        String jsonStr = "";
+
+        try {
+
+            FileReader fileReader = new FileReader(longFileName);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            while ((line = bufferedReader.readLine()) != null) {
+                jsonStr = line;
+            }
+
+            bufferedReader.close();
+        } catch (FileNotFoundException ex) {
+            System.out.println("Unable to open file '" + fileName + "'");
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            System.out.println("Error reading file '" + fileName + "'");
+        }
+
+        return Log.fromJSON(jsonStr);
     }
 
     public static void writeLogFile(String fileName, String newLog) {

@@ -26,7 +26,7 @@ class FSMTest {
         File logFile = new File(String.valueOf(port));
 
         try {
-            context = new Context(port, logFile, true);
+            context = new Context(port, logFile.getName(), true);
             originalTerm = context.getTerm();
             newState = state.execute(context);
             context.getServerSocket().close();
@@ -52,7 +52,7 @@ class FSMTest {
         File logFile = new File(String.valueOf(port));
 
         try {
-            context = new Context(port, logFile, true);
+            context = new Context(port, logFile.getName(), true);
             originalTerm = context.getTerm();
             newState = state.execute(context);
             context.getServerSocket().close();
@@ -111,7 +111,7 @@ class FSMTest {
         thread.start();
 
         try {
-            context = new Context(port, logFile, true);
+            context = new Context(port, logFile.getName(), true);
             originalTerm = context.getTerm();
             newState = state.execute(context);
             context.getServerSocket().close();
@@ -169,7 +169,7 @@ class FSMTest {
         thread.start();
 
         try {
-            context = new Context(port, logFile, true);
+            context = new Context(port, logFile.getName(), true);
             newState = state.execute(context);
             context.getServerSocket().close();
         } catch (SocketException e) {
@@ -225,7 +225,7 @@ class FSMTest {
         thread.start();
 
         try {
-            context = new Context(port, logFile, true);
+            context = new Context(port, logFile.getName(), true);
             newState = state.execute(context);
             context.getServerSocket().close();
         } catch (SocketException e) {
@@ -281,7 +281,7 @@ class FSMTest {
         thread.start();
 
         try {
-            context = new Context(port, logFile, true);
+            context = new Context(port, logFile.getName(), true);
             newState = state.execute(context);
             context.getServerSocket().close();
         } catch (SocketException e) {
@@ -337,7 +337,7 @@ class FSMTest {
         thread.start();
 
         try {
-            context = new Context(port, logFile, true);
+            context = new Context(port, logFile.getName(), true);
             newState = state.execute(context);
             context.getServerSocket().close();
         } catch (SocketException e) {

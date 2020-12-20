@@ -1,9 +1,8 @@
 package example;
 
+import utils.Entry;
 import utils.JSONUtils;
 import utils.Log;
-
-import java.util.List;
 
 public class LogExample {
 
@@ -11,16 +10,31 @@ public class LogExample {
         String fileName = JSONUtils.getFileName("prueba");
         JSONUtils.createLogFile(fileName);
 
-        Log log1 = new Log(1,1,1,1);
-        String log1Str = log1.toJson();
-        JSONUtils.writeLogFile(fileName, log1Str);
+        Log log = new Log();
 
-        Log log2 = new Log(1, 2, 1,1);
-        String log2Str = log2.toJson();
-        JSONUtils.writeLogFile(fileName, log2Str);
+        Entry entry1 = new Entry(1,1,1,1);
+        log.appendEntry(entry1);
 
-        List<Log> logs = JSONUtils.readLogFile(fileName);
+        String logStr = log.toJson();
+        JSONUtils.writeLogFile(fileName, logStr);
 
-        assert logs.size() == 2;
+        Log readedLog = JSONUtils.readLogFile(fileName);
+
+        if(readedLog.getEntryList().size() == 1) {
+            System.out.println("First Read");
+            readedLog.printLog();
+        }
+
+        Entry entry2 = new Entry(1, 2, 2,2);
+        log.appendEntry(entry2);
+
+        logStr = log.toJson();
+        JSONUtils.writeLogFile(fileName, logStr);
+
+        readedLog = JSONUtils.readLogFile(fileName);
+        if(readedLog.getEntryList().size() == 2) {
+            System.out.println("\n\nSecond Read");
+            readedLog.printLog();
+        }
     }
 }

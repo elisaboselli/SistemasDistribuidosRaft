@@ -1,6 +1,5 @@
 package context;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -21,15 +20,17 @@ public class Context {
     private List<Host> allHosts;
     private Host leader;
     private int term;
-    private File logFile;
+    private String logFile;
     private int timeout;
+    private int logIndex;
 
-    public Context(int port, File logFile, Boolean isTest) throws SocketException {
+    public Context(int port, String logFile, Boolean isTest) throws SocketException {
         this.term = 0;
         this.port = port;
         this.leader = null;
         this.allHosts = obtainAllHosts(isTest);
         this.logFile = logFile;
+        this.logIndex = 0;
         try {
             this.serverSocket = new DatagramSocket(port);
         } catch (SocketException e) {
@@ -121,6 +122,15 @@ public class Context {
 
     public void setTimeout(int timeout) {
         this.timeout = timeout;
+    }
+
+    public int getNextLogIndex(){
+        this.logIndex++;
+        return logIndex;
+    }
+
+    public String getLogName() {
+        return this.logFile;
     }
 
     public static int getWaitTime() {
