@@ -26,14 +26,19 @@ public final class Constants {
     // Server Message Types
     public static final String GET = "get";
     public static final String SET = "set";
+
     public static final String APPEND = "append";
-    public static final String APPEND_OK = "append_ok";
+    public static final String APPEND_SUCCESS = "append_success";
+    public static final String APPEND_FAIL = "append_fail";
+
     public static final String UPDATE = "update";
     public static final String UPDATE_OK = "update_ok";
     public static final String COMMIT = "commit";
     public static final String COMMIT_OK = "commit_ok";
+
     public static final String POSTULATION = "postulation";
     public static final String VOTE_OK = "vote_ok";
     public static final String VOTE_REJECT = "vote_reject";
+
     public static final String NOT_LEADER = "Not leader to process set command";
 }

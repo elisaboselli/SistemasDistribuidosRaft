@@ -7,6 +7,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import com.google.gson.Gson;
 
@@ -69,6 +70,31 @@ public class Follower {
                 Host leaderHost = new Host(request.getAddress(), request.getPort());
                 context.setLeader(leaderHost);
                 //System.out.println("New Leader >> " + context.getLeader().toString());
+                break;
+
+            case Constants.APPEND:
+                // 1º get log
+                Log log = JSONUtils.readLogFile(context.getLogName());
+                int logIndex = context.getLogIndex();
+
+                // 2º create new entry and append
+                List<String> params = serverRequest.getParams();
+                int index = Integer.parseInt(params.get(0));
+                int term = Integer.parseInt(params.get(1));
+                int id = Integer.parseInt(params.get(2));
+                int value = Integer.parseInt(params.get(3));
+
+                // Si mi next index no coincide con el del leader me tengo que actualizar
+                Boolean consistent = logIndex == (index-1);
+                if(consistent) {
+                    Entry entry = new Entry(index, term, id, value);
+                    log.appendEntry(entry);
+                    JSONUtils.writeLogFile(context.getLogName(), log.toJson());
+                }
+
+                SendMessageUtils.appendEntryResponse(context, request, consistent, logIndex);
+
+
                 break;
 
             case Constants.SET:

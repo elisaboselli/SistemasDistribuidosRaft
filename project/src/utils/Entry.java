@@ -27,7 +27,7 @@ public class Entry {
 
     public Entry(Context context, int id, int value){
         this.term = context.getTerm();
-        this.index = context.getNextLogIndex();
+        this.index = context.getLogIndex() + 1;
         this.id = id;
         this.value = value;
         this.commited = false;
@@ -43,6 +43,8 @@ public class Entry {
     public int getValue() { return this.value; }
 
     public String getIndexStr() { return String.valueOf(this.index); }
+
+    public String getTermStr() { return String.valueOf(this.term); }
 
     public String getIdStr() { return String.valueOf(this.id); }
 

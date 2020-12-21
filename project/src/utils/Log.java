@@ -16,7 +16,7 @@ public class Log {
     }
 
     public void appendEntry(Entry entry) {
-        this.entryList.add(entry);
+        this.entryList.add(0, entry);
     }
 
     public String toJson() {
@@ -27,6 +27,11 @@ public class Log {
     public static Log fromJSON(String jsonStr) {
         Gson gson = new Gson();
         return gson.fromJson(jsonStr, Log.class);
+    }
+
+    public int getLastIndex() {
+        if(entryList.isEmpty()) { return 0; }
+        return entryList.get(0).getIndex();
     }
 
     public void printLog(){

@@ -124,10 +124,9 @@ public class Context {
         this.timeout = timeout;
     }
 
-    public int getNextLogIndex(){
-        this.logIndex++;
-        return logIndex;
-    }
+    public int getLogIndex() { return this.logIndex; }
+
+    public void updateLogIndex() { this.logIndex++; }
 
     public String getLogName() {
         return this.logFile;

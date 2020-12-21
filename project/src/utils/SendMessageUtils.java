@@ -1,10 +1,13 @@
 package utils;
 
+import com.sun.tools.internal.jxc.ap.Const;
 import context.Context;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class SendMessageUtils {
@@ -70,8 +73,19 @@ public class SendMessageUtils {
 
     public static void appendEntry(Context context, Entry entry) {
         for (Host host : context.getAllHosts()) {
-            List<String> messageParams = Arrays.asList(entry.getIndexStr(), entry.getIdStr(), entry.getValueStr());
+            List<String> messageParams = Arrays.asList(entry.getIndexStr(), entry.getTermStr(), entry.getIdStr(),
+                    entry.getValueStr());
             sendMessage(context, host, Constants.APPEND, messageParams);
+        }
+    }
+
+    public static void appendEntryResponse(Context context, DatagramPacket request, Boolean success, int lastIndex) {
+        Host host = new Host(request.getAddress(), request.getPort());
+        if(success){
+            sendMessage(context, host, Constants.APPEND_SUCCESS, null);
+        } else {
+            List<String> messageParams = Collections.singletonList(String.valueOf(lastIndex));
+            sendMessage(context, host, Constants.APPEND_FAIL, messageParams);
         }
     }
 }
