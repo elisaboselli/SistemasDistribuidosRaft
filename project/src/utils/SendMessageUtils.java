@@ -34,8 +34,9 @@ public class SendMessageUtils {
     }
 
     public static void sendHeartBeat(Context context) {
+        List<String> messageParams = Arrays.asList(String.valueOf(context.getLogIndex()));
         for (Host host : context.getAllHosts()) {
-            sendMessage(context, host, Constants.HEART_BEAT_MESSAGE, null);
+            sendMessage(context, host, Constants.HEART_BEAT_MESSAGE, messageParams);
         }
     }
 
