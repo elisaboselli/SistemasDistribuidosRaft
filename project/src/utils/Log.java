@@ -15,6 +15,11 @@ public class Log {
         return this.entryList;
     }
 
+    public Entry getLastEntry(){
+        if(entryList.isEmpty()) { return null; }
+        return entryList.get(0);
+    }
+
     public void appendEntry(Entry entry) {
         this.entryList.add(0, entry);
     }
@@ -25,6 +30,9 @@ public class Log {
     }
 
     public static Log fromJSON(String jsonStr) {
+        if(jsonStr.isEmpty()){
+            return new Log();
+        }
         Gson gson = new Gson();
         return gson.fromJson(jsonStr, Log.class);
     }

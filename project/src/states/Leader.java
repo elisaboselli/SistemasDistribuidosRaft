@@ -75,6 +75,7 @@ public class Leader {
 
         Message serverRequest = JSONUtils.messageFromJson(request);
         serverRequest.log(context.getPort(), true);
+        List<String> params = serverRequest.getParams();
         Log log;
 
         switch (serverRequest.getType()) {
@@ -98,7 +99,6 @@ public class Leader {
                 log = JSONUtils.readLogFile(context.getLogName());
 
                 // 2º create new entry and append
-                List<String> params = serverRequest.getParams();
                 int id = Integer.parseInt(params.get(0));
                 int value = Integer.parseInt(params.get(1));
 
@@ -112,12 +112,21 @@ public class Leader {
 
             case Constants.APPEND_SUCCESS:
                 log = JSONUtils.readLogFile(context.getLogName());
-                Entry lastEntry = log.getEntryList().get(0);
+                Entry lastEntry = log.getLastEntry();
                 lastEntry.updateQuorum();
 
                 if(lastEntry.getQuorum() >= Constants.QUORUM) {
                     lastEntry.commit();
                 }
+
+                break;
+
+            case Constants.INCONSISTENT_LOG:
+                //int followerIndex = Integer.parseInt(params.get(0));
+                //log = JSONUtils.readLogFile(context.getLogName());
+
+                System.out.println("INCONSISTENT LOG");
+
 
                 break;
 

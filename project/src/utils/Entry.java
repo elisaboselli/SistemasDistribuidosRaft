@@ -52,6 +52,8 @@ public class Entry {
 
     public void commit() { this.commited = true; }
 
+    public boolean isCommited() { return this.commited; }
+
     public int getQuorum() { return this.quorum; }
 
     public void updateQuorum() { this.quorum++; }

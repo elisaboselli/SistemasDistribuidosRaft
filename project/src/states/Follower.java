@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
+import com.google.gson.JsonArray;
 import context.Context;
 import utils.*;
 
@@ -57,6 +58,8 @@ public class Follower {
 
         Message serverRequest = JSONUtils.messageFromJson(request);
         serverRequest.log(context.getPort(), true);
+        List<String> params = serverRequest.getParams();
+        Log log;
 
         switch (serverRequest.getType()) {
 
@@ -69,16 +72,26 @@ public class Follower {
             case Constants.HEART_BEAT_MESSAGE:
                 Host leaderHost = new Host(request.getAddress(), request.getPort());
                 context.setLeader(leaderHost);
-                //System.out.println("New Leader >> " + context.getLeader().toString());
+
+                int leaderIndex = Integer.parseInt(params.get(0));
+                if(leaderIndex != context.getLogIndex()) {
+                    SendMessageUtils.inconsistentLog(context, request);
+                } else {
+                    log = JSONUtils.readLogFile(context.getLogName());
+                    Entry lastEntry = log.getLastEntry();
+
+                    if(lastEntry != null && !lastEntry.isCommited()){
+                        lastEntry.commit();
+                    }
+                }
                 break;
 
             case Constants.APPEND:
                 // 1º get log
-                Log log = JSONUtils.readLogFile(context.getLogName());
+                log = JSONUtils.readLogFile(context.getLogName());
                 int logIndex = context.getLogIndex();
 
                 // 2º create new entry and append
-                List<String> params = serverRequest.getParams();
                 int index = Integer.parseInt(params.get(0));
                 int term = Integer.parseInt(params.get(1));
                 int id = Integer.parseInt(params.get(2));

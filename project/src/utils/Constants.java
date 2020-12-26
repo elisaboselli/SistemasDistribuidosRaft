@@ -31,6 +31,9 @@ public final class Constants {
     public static final String APPEND_SUCCESS = "append_success";
     public static final String APPEND_FAIL = "append_fail";
 
+    public static final String CONSISTENT_LOG = "consistent_log";
+    public static final String INCONSISTENT_LOG = "inconsistent_log";
+
     public static final String UPDATE = "update";
     public static final String UPDATE_OK = "update_ok";
     public static final String COMMIT = "commit";

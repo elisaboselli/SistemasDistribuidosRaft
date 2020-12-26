@@ -88,4 +88,10 @@ public class SendMessageUtils {
             sendMessage(context, host, Constants.APPEND_FAIL, messageParams);
         }
     }
+
+    public static void inconsistentLog(Context context, DatagramPacket request) {
+        Host host = new Host(request.getAddress(), request.getPort());
+        List<String> messageParams = Arrays.asList(String.valueOf(context.getLogIndex()));
+        sendMessage(context, host, Constants.INCONSISTENT_LOG, messageParams);
+    }
 }
