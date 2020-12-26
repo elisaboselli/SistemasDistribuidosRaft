@@ -113,11 +113,14 @@ public class Leader {
             case Constants.APPEND_SUCCESS:
                 log = JSONUtils.readLogFile(context.getLogName());
                 Entry lastEntry = log.getLastEntry();
+
                 lastEntry.updateQuorum();
 
                 if(lastEntry.getQuorum() >= Constants.QUORUM) {
                     lastEntry.commit();
                 }
+
+                JSONUtils.writeLogFile(context.getLogName(), log.toJson());
 
                 break;
 

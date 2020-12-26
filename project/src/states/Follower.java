@@ -82,6 +82,7 @@ public class Follower {
 
                     if(lastEntry != null && !lastEntry.isCommited()){
                         lastEntry.commit();
+                        JSONUtils.writeLogFile(context.getLogName(), log.toJson());
                     }
                 }
                 break;

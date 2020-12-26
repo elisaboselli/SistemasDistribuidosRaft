@@ -69,13 +69,13 @@ public class Client {
                 socketUDP.send(request);
 
                 // Receive response
-                byte[] buffer = new byte[1000];
+                /*byte[] buffer = new byte[1000];
                 DatagramPacket response = new DatagramPacket(buffer, buffer.length);
                 socketUDP.receive(response);
 
                 // Parse Response
                 Message responseMessage = JSONUtils.messageFromJson(response);
-                responseMessage.log(localPort, true);
+                responseMessage.log(localPort, true);*/
 
                 // Prepare for next operation
                 nextOp = getNextOperationFromInput(scan);

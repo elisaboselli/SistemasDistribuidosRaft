@@ -56,7 +56,7 @@ public class Entry {
 
     public int getQuorum() { return this.quorum; }
 
-    public void updateQuorum() { this.quorum++; }
+    public void updateQuorum() { this.quorum = this.quorum + 1; }
 
 
     public String toJson() {
@@ -80,5 +80,8 @@ public class Entry {
         System.out.println("Term: " + this.term);
         System.out.println("Id: " + this.id);
         System.out.println("Value: " + this.value);
+        System.out.println("Quorum: " + this.quorum);
+        System.out.println("Commited: " + this.commited);
+        System.out.println("---------------------------------\n");
     }
 }
