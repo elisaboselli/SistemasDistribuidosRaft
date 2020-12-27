@@ -24,6 +24,26 @@ public class Log {
         this.entryList.add(0, entry);
     }
 
+    public Entry getEntryByIndex(int index){
+        for(Entry entry : entryList) {
+            if(entry.getIndex() == index){
+                return entry;
+            }
+        }
+        return null;
+    }
+
+    public Entry getOldestUncommitedEntry() {
+        int size = entryList.size();
+        for(int i = size-1; i>=0 ; i-- ) {
+            Entry entry = entryList.get(i);
+            if(!entry.isCommited()) {
+                return entry;
+            }
+        }
+        return null;
+    }
+
     public String toJson() {
         Gson gson = new Gson();
         return gson.toJson(this, Log.class);

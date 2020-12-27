@@ -97,16 +97,19 @@ public class Follower {
                 int term = Integer.parseInt(params.get(1));
                 int id = Integer.parseInt(params.get(2));
                 int value = Integer.parseInt(params.get(3));
+                boolean inconsistent_log = params.get(4) != null;
 
-                // Si mi next index no coincide con el del leader me tengo que actualizar
+                // Si los log estan consistententes hasta el momento, agrego la nueva entrada.
                 Boolean consistent = logIndex == (index-1);
                 if(consistent) {
                     Entry entry = new Entry(index, term, id, value);
                     log.appendEntry(entry);
                     JSONUtils.writeLogFile(context.getLogName(), log.toJson());
+                    context.updateLogIndex();
                 }
 
-                SendMessageUtils.appendEntryResponse(context, request, consistent, logIndex);
+                // Y respondo el append
+                SendMessageUtils.appendEntryResponse(context, request, consistent, logIndex+1, inconsistent_log);
 
 
                 break;

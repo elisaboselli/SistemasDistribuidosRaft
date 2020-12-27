@@ -77,6 +77,7 @@ public class Leader {
         serverRequest.log(context.getPort(), true);
         List<String> params = serverRequest.getParams();
         Log log;
+        Entry entry;
 
         switch (serverRequest.getType()) {
 
@@ -102,9 +103,10 @@ public class Leader {
                 int id = Integer.parseInt(params.get(0));
                 int value = Integer.parseInt(params.get(1));
 
-                Entry entry = new Entry(context, id, value);
+                entry = new Entry(context, id, value);
                 log.appendEntry(entry);
                 JSONUtils.writeLogFile(context.getLogName(), log.toJson());
+                context.updateLogIndex();
 
                 // 3º ask followers to append
                 SendMessageUtils.appendEntry(context, entry);
@@ -125,11 +127,13 @@ public class Leader {
                 break;
 
             case Constants.INCONSISTENT_LOG:
-                //int followerIndex = Integer.parseInt(params.get(0));
-                //log = JSONUtils.readLogFile(context.getLogName());
-
                 System.out.println("INCONSISTENT LOG");
 
+                int followerIndex = Integer.parseInt(params.get(0));
+                log = JSONUtils.readLogFile(context.getLogName());
+
+                entry = log.getEntryByIndex(followerIndex);
+                SendMessageUtils.updateInconsistentLog(context, request, entry);
 
                 break;
 
