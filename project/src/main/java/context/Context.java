@@ -128,6 +128,8 @@ public class Context {
 
     public void updateLogIndex() { this.logIndex++; }
 
+    public void setLogIndex(int index) { this.logIndex = index; }
+
     public String getLogName() {
         return this.logFile;
     }

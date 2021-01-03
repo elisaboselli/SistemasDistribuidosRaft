@@ -51,6 +51,7 @@ public class SendMessageUtilsTest {
 
             hosts.add(new Host(InetAddress.getByName("localhost"), port));
             context.setAllHosts(hosts);
+            context.setLogIndex(8);
 
         } catch (SocketException | UnknownHostException e) {
             e.printStackTrace();
@@ -64,9 +65,10 @@ public class SendMessageUtilsTest {
         assertEquals(port, Integer.parseInt(output.get(2)));
 
         List<String> params = Arrays.asList(output.get(3).split("\\s+"));
-        assertEquals(0, Integer.parseInt(params.get(0)));
-
+        assertEquals(8, Integer.parseInt(params.get(0)));
     }
+
+    // Test Utils ------------------------------------------------------------------
 
     List<String> parseMessage(String msg){
         int i = 0;
