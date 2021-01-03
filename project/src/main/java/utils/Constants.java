@@ -14,6 +14,9 @@ public final class Constants {
     // public static final int HEART_BEAT = 10000; // 10 seconds
     public static final int HEART_BEAT = 5000; // 5 seconds
 
+    public static final String SENT = "Sent";
+    public static final String RECEIVED = "Received";
+
     public static final int NO_TERM = 0;
 
     // Message Types
@@ -44,4 +47,5 @@ public final class Constants {
     public static final String VOTE_REJECT = "vote_reject";
 
     public static final String NOT_LEADER = "Not leader to process set command";
+
 }
