@@ -97,7 +97,11 @@ public class Follower {
                 int term = Integer.parseInt(params.get(1));
                 int id = Integer.parseInt(params.get(2));
                 int value = Integer.parseInt(params.get(3));
-                boolean inconsistent_log = params.get(4) != null;
+
+                boolean inconsistent_log = false;
+                if (params.size()>4) {
+                    inconsistent_log = params.get(4) != null;
+                }
 
                 // Si los log estan consistententes hasta el momento, agrego la nueva entrada.
                 Boolean consistent = logIndex == (index-1);

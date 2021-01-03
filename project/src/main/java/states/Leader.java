@@ -71,7 +71,7 @@ public class Leader {
         return null;
     }
 
-    private static void processMessage(Context context, DatagramPacket request) {
+    public static void processMessage(Context context, DatagramPacket request) {
 
         Message serverRequest = JSONUtils.messageFromJson(request);
         serverRequest.log(context.getPort(), true);
