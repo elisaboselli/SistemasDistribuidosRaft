@@ -1,17 +1,15 @@
 import context.Context;
 import org.junit.After;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import utils.Constants;
+import utils.Entry;
 import utils.Host;
 import utils.SendMessageUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,15 +21,44 @@ public class SendMessageUtilsTest {
     private final ByteArrayOutputStream err = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
     private final PrintStream originalErr = System.err;
-    private final int port = 6787;
+    private static final int port = 6787;
 
-    private File logFile;
+    private static File logFile;
+    private static List<Host> hosts;
+    private static DatagramPacket datagramPacket;
     private Context context;
+
+    @BeforeAll
+    static void setContext() {
+        logFile = new File(String.valueOf(port));
+        hosts = new ArrayList<>();
+        String msg = "something";
+
+        try {
+            hosts.add(new Host(InetAddress.getByName("localhost"), port));
+            datagramPacket = new DatagramPacket(msg.getBytes(), msg.length(), InetAddress.getByName("localhost"), port);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+    }
 
     @BeforeEach
     public void setStreams() {
         System.setOut(new PrintStream(out));
         System.setErr(new PrintStream(err));
+
+        try {
+            context = new Context(port, logFile.getName(), true);
+            context.setAllHosts(hosts);
+
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @AfterEach
+    public void closeSocket() {
+        context.getServerSocket().close();
     }
 
     @After
@@ -43,19 +70,8 @@ public class SendMessageUtilsTest {
 
     @Test
     void test_sendHeartbeatMessage(){
-        List<Host> hosts = new ArrayList<>();
 
-        try {
-            logFile = new File(String.valueOf(port));
-            context = new Context(port, logFile.getName(), true);
-
-            hosts.add(new Host(InetAddress.getByName("localhost"), port));
-            context.setAllHosts(hosts);
-            context.setLogIndex(8);
-
-        } catch (SocketException | UnknownHostException e) {
-            e.printStackTrace();
-        }
+        context.setLogIndex(8);
 
         SendMessageUtils.sendHeartBeat(context);
         List<String> output = parseMessage(out.toString());
@@ -66,6 +82,168 @@ public class SendMessageUtilsTest {
 
         List<String> params = Arrays.asList(output.get(3).split("\\s+"));
         assertEquals(8, Integer.parseInt(params.get(0)));
+    }
+
+   @Test
+    void test_sendPostulationMessage(){
+
+        context.setLogIndex(8);
+
+        SendMessageUtils.sendPostulation(hosts, context);
+        List<String> output = parseMessage(out.toString());
+
+        assertEquals(Constants.SENT, output.get(0));
+        assertEquals(Constants.POSTULATION, output.get(1));
+        assertEquals(port, Integer.parseInt(output.get(2)));
+    }
+
+    @Test
+    void test_sendPositiveVoteMessage(){
+
+        context.setTerm(3);
+
+        SendMessageUtils.sendVote(context, datagramPacket, 4);
+        List<String> output = parseMessage(out.toString());
+
+        assertEquals(Constants.SENT, output.get(0));
+        assertEquals(Constants.VOTE_OK, output.get(1));
+        assertEquals(port, Integer.parseInt(output.get(2)));
+
+        List<String> params = Arrays.asList(output.get(3).split("\\s+"));
+        assertEquals("vote_ok", params.get(0));
+        assertEquals("4", params.get(3));
+    }
+
+    @Test
+    void test_sendNegativeVoteMessage(){
+
+        context.setTerm(3);
+
+        SendMessageUtils.sendVote(context, datagramPacket, 2);
+        List<String> output = parseMessage(out.toString());
+
+        assertEquals(Constants.SENT, output.get(0));
+        assertEquals(Constants.VOTE_REJECT, output.get(1));
+        assertEquals(port, Integer.parseInt(output.get(2)));
+
+        List<String> params = Arrays.asList(output.get(3).split("\\s+"));
+        assertEquals("vote_reject", params.get(0));
+        assertEquals("2", params.get(3));
+    }
+
+    @Test
+    void test_sendRejectSetMessage(){
+
+        context.setLeader(hosts.get(0));
+
+        SendMessageUtils.rejectSetMessage(context, datagramPacket);
+        List<String> output = parseMessage(out.toString());
+
+        assertEquals(Constants.SENT, output.get(0));
+        assertEquals(Constants.NOT_LEADER, output.get(1));
+        assertEquals(port, Integer.parseInt(output.get(2)));
+
+        List<String> params = Arrays.asList(output.get(3).split("\\s+"));
+        assertEquals("localhost/127.0.0.1", params.get(0));
+        assertEquals(String.valueOf(port), params.get(1));
+    }
+
+    @Test
+    void test_sendAppendEntryMessage(){
+
+        Entry entry = new Entry(1,2,3,4);
+
+        SendMessageUtils.appendEntry(context, entry);
+        List<String> output = parseMessage(out.toString());
+
+        assertEquals(Constants.SENT, output.get(0));
+        assertEquals(Constants.APPEND, output.get(1));
+        assertEquals(port, Integer.parseInt(output.get(2)));
+
+        List<String> params = Arrays.asList(output.get(3).split("\\s+"));
+        assertEquals(entry.getIndexStr(), params.get(0));
+        assertEquals(entry.getTermStr(), params.get(1));
+        assertEquals(entry.getIdStr(), params.get(2));
+        assertEquals(entry.getValueStr(), params.get(3));
+    }
+
+    @Test
+    void test_sendAppendEntryResponseSuccesssMessage(){
+
+        SendMessageUtils.appendEntryResponse(context, datagramPacket,true, 5, false);
+        List<String> output = parseMessage(out.toString());
+
+        assertEquals(Constants.SENT, output.get(0));
+        assertEquals(Constants.APPEND_SUCCESS, output.get(1));
+        assertEquals(port, Integer.parseInt(output.get(2)));
+    }
+
+    @Test
+    void test_sendAppendEntryResponseFailureMessage(){
+
+        SendMessageUtils.appendEntryResponse(context, datagramPacket,false, 5, false);
+        List<String> output = parseMessage(out.toString());
+
+        assertEquals(Constants.SENT, output.get(0));
+        assertEquals(Constants.APPEND_FAIL, output.get(1));
+        assertEquals(port, Integer.parseInt(output.get(2)));
+
+        List<String> params = Arrays.asList(output.get(3).split("\\s+"));
+        assertEquals("5", params.get(0));
+
+    }
+
+    @Test
+    void test_sendAppendEntryResponseInconsistentLogMessage(){
+
+        context.setLogIndex(3);
+
+        SendMessageUtils.appendEntryResponse(context, datagramPacket,true, 5, true);
+        List<String> output = parseMessage(out.toString());
+
+        assertEquals(Constants.SENT, output.get(0));
+        assertEquals(Constants.INCONSISTENT_LOG, output.get(1));
+        assertEquals(port, Integer.parseInt(output.get(2)));
+
+        List<String> params = Arrays.asList(output.get(3).split("\\s+"));
+        assertEquals("3", params.get(0));
+    }
+
+    @Test
+    void test_sendInconsistentLogMessage(){
+
+        context.setLogIndex(3);
+
+        SendMessageUtils.inconsistentLog(context, datagramPacket);
+        List<String> output = parseMessage(out.toString());
+
+        assertEquals(Constants.SENT, output.get(0));
+        assertEquals(Constants.INCONSISTENT_LOG, output.get(1));
+        assertEquals(port, Integer.parseInt(output.get(2)));
+
+        List<String> params = Arrays.asList(output.get(3).split("\\s+"));
+        assertEquals("3", params.get(0));
+    }
+
+    @Test
+    void test_sendUpdateInconsistentLogMessage(){
+
+        Entry entry = new Entry(1,2,3,4);
+        context.setLogIndex(3);
+
+        SendMessageUtils.updateInconsistentLog(context, datagramPacket,entry);
+        List<String> output = parseMessage(out.toString());
+
+        assertEquals(Constants.SENT, output.get(0));
+        assertEquals(Constants.APPEND, output.get(1));
+        assertEquals(port, Integer.parseInt(output.get(2)));
+
+        List<String> params = Arrays.asList(output.get(3).split("\\s+"));
+        assertEquals(entry.getIndexStr(), params.get(0));
+        assertEquals(entry.getTermStr(), params.get(1));
+        assertEquals(entry.getIdStr(), params.get(2));
+        assertEquals(entry.getValueStr(), params.get(3));
+        assertEquals(Constants.UPDATE, params.get(4));
     }
 
     // Test Utils ------------------------------------------------------------------
