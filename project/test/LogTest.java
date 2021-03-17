@@ -144,4 +144,41 @@ public class LogTest {
         int lastIndex = log.getLastIndex();
         assertEquals(lastIndex, 0);
     }
+
+    @Test
+    void test_getCommitedEntryById(){
+        Entry e1 = new Entry(2, 5, 10, 30);
+        Entry e2 = new Entry(2, 5, 10, 30);
+        e2.commit();
+        Entry e3 = new Entry(3, 6, 12, 50);
+        Entry e4 = new Entry(3, 6, 12, 50);
+        e4.commit();
+        Entry e5 = new Entry(4, 7, 10, 20);
+        Entry e6 = new Entry(5, 8, 11, 80);
+
+        log.appendEntry(e1);
+        log.appendEntry(e2);
+        log.appendEntry(e3);
+        log.appendEntry(e4);
+        log.appendEntry(e5);
+
+        // Not exist
+        Entry entry = log.getCommitedEntryById(8);
+        assertNull(entry);
+
+        // Not commited
+        entry = log.getCommitedEntryById(11);
+        assertNull(entry);
+
+        // Committed is last
+        entry = log.getCommitedEntryById(12);
+        assertNotNull(entry);
+        assertEquals(entry.getValue(),50);
+
+        // Commited is not last
+        entry = log.getCommitedEntryById(10);
+        assertNotNull(entry);
+        assertEquals(entry.getValue(),30);
+
+    }
 }

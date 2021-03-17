@@ -33,6 +33,15 @@ public class Log {
         return null;
     }
 
+    public Entry getCommitedEntryById(int id){
+        for(Entry entry : entryList) {
+            if(entry.getId() == id && entry.isCommited()) {
+                return entry;
+            }
+        }
+        return null;
+    }
+
     public Entry getOldestUncommitedEntry() {
         int size = entryList.size();
         for(int i = size-1; i>=0 ; i-- ) {
