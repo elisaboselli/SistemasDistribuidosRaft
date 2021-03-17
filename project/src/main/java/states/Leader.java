@@ -78,6 +78,7 @@ public class Leader {
         List<String> params = serverRequest.getParams();
         Log log;
         Entry entry;
+        int id, value;
 
         switch (serverRequest.getType()) {
 
@@ -95,13 +96,25 @@ public class Leader {
                 }
                 break;
 
+            case Constants.GET:
+                // 1º Get log and params
+                log = JSONUtils.readLogFile(context.getLogName());
+                id = Integer.parseInt(params.get(0));
+
+                // 2º Search Entry
+                entry = log.getCommitedEntryById(id);
+
+                // 3º Send Response
+                SendMessageUtils.sendResponseGetMessage(context,request, entry, id);
+                break;
+
             case Constants.SET:
                 // 1º get log
                 log = JSONUtils.readLogFile(context.getLogName());
 
                 // 2º create new entry and append
-                int id = Integer.parseInt(params.get(0));
-                int value = Integer.parseInt(params.get(1));
+                id = Integer.parseInt(params.get(0));
+                value = Integer.parseInt(params.get(1));
 
                 entry = new Entry(context, id, value);
                 log.appendEntry(entry);
@@ -110,6 +123,7 @@ public class Leader {
 
                 // 3º ask followers to append
                 SendMessageUtils.appendEntry(context, entry);
+                SendMessageUtils.acceptSetMessage(context, request, entry);
                 break;
 
             case Constants.APPEND_SUCCESS:
