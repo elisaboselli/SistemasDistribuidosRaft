@@ -31,6 +31,9 @@ public class SendMessageUtils {
         }
     }
 
+
+    // SERVERS MESSAGES -------------------------------------------------------------------------
+
     public static void sendHeartBeat(Context context) {
         List<String> messageParams = Arrays.asList(String.valueOf(context.getLogIndex()));
         for (Host host : context.getAllHosts()) {
@@ -61,13 +64,6 @@ public class SendMessageUtils {
         List<String> messageParams = Arrays.asList(messageType + " for term " + requestTerm);
         Host host = new Host(voteRequest.getAddress(), voteRequest.getPort());
         sendMessage(context, host, messageType, messageParams);
-    }
-
-    public static void rejectSetMessage(Context context, DatagramPacket request) {
-        List<String> messageParams = Arrays.asList(context.getLeader().getAddress().toString(),
-                String.valueOf(context.getLeader().getPort()));
-        Host host = new Host(request.getAddress(), request.getPort());
-        sendMessage(context, host, Constants.NOT_LEADER, messageParams);
     }
 
     public static void appendEntry(Context context, Entry entry) {
@@ -106,4 +102,37 @@ public class SendMessageUtils {
                 entry.getValueStr(), Constants.UPDATE);
         sendMessage(context, host, Constants.APPEND, messageParams);
     }
+
+
+    // CLIENT MESSAGES --------------------------------------------------------------------------
+
+    public static void rejectSetMessage(Context context, DatagramPacket request) {
+        List<String> messageParams = Arrays.asList(context.getLeader().getAddress().toString(),
+                String.valueOf(context.getLeader().getPort()));
+        Host host = new Host(request.getAddress(), request.getPort());
+        sendMessage(context, host, Constants.NOT_LEADER, messageParams);
+    }
+
+    public static void acceptSetMessage(Context context, DatagramPacket request, Entry entry) {
+        List<String> messageParams = Arrays.asList(entry.getIdStr(), entry.getValueStr());
+        Host host = new Host(request.getAddress(), request.getPort());
+        sendMessage(context, host, Constants.SET_ACCEPTED, messageParams);
+    }
+
+    public static void sendResponseGetMessage(Context context, DatagramPacket request, Entry entry, int id) {
+        List<String> messageParams;
+        String messageType;
+
+        if(entry != null) {
+            messageParams = Arrays.asList(entry.getIdStr(), entry.getValueStr());
+            messageType = Constants.GET_FOUND;
+        } else {
+            messageParams = Arrays.asList(String.valueOf(id));
+            messageType = Constants.GET_NOT_FOUND;
+        }
+
+        Host host = new Host(request.getAddress(), request.getPort());
+        sendMessage(context, host, messageType, messageParams);
+    }
+
 }

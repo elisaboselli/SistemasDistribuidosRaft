@@ -246,6 +246,58 @@ public class SendMessageUtilsTest {
         assertEquals(Constants.UPDATE, params.get(4));
     }
 
+    @Test
+    void test_acceptSetMessage(){
+
+        context.setLeader(hosts.get(0));
+        Entry entry = new Entry(1,2,3,4);
+
+        SendMessageUtils.acceptSetMessage(context, datagramPacket, entry);
+        List<String> output = parseMessage(out.toString());
+
+        assertEquals(Constants.SENT, output.get(0));
+        assertEquals(Constants.SET_ACCEPTED, output.get(1));
+        assertEquals(port, Integer.parseInt(output.get(2)));
+
+        List<String> params = Arrays.asList(output.get(3).split("\\s+"));
+        assertEquals("3", params.get(0));
+        assertEquals("4", params.get(1));
+    }
+
+    @Test
+    void test_sendResponseGetMessage_notFound(){
+
+        context.setLeader(hosts.get(0));
+
+        SendMessageUtils.sendResponseGetMessage(context, datagramPacket, null, 3);
+        List<String> output = parseMessage(out.toString());
+
+        assertEquals(Constants.SENT, output.get(0));
+        assertEquals(Constants.GET_NOT_FOUND, output.get(1));
+        assertEquals(port, Integer.parseInt(output.get(2)));
+
+        List<String> params = Arrays.asList(output.get(3).split("\\s+"));
+        assertEquals("3", params.get(0));
+    }
+
+    @Test
+    void test_sendResponseGetMessage_found(){
+
+        context.setLeader(hosts.get(0));
+        Entry entry = new Entry(1,2,3,4);
+
+        SendMessageUtils.sendResponseGetMessage(context, datagramPacket, entry, 3);
+        List<String> output = parseMessage(out.toString());
+
+        assertEquals(Constants.SENT, output.get(0));
+        assertEquals(Constants.GET_FOUND, output.get(1));
+        assertEquals(port, Integer.parseInt(output.get(2)));
+
+        List<String> params = Arrays.asList(output.get(3).split("\\s+"));
+        assertEquals("3", params.get(0));
+        assertEquals("4", params.get(1));
+    }
+
     // Test Utils ------------------------------------------------------------------
 
     List<String> parseMessage(String msg){

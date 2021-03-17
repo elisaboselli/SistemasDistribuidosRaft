@@ -46,6 +46,9 @@ public final class Constants {
     public static final String VOTE_OK = "vote_ok";
     public static final String VOTE_REJECT = "vote_reject";
 
+    // Client Message Types
     public static final String NOT_LEADER = "Not leader to process set command";
-
+    public static final String SET_ACCEPTED = "Set: request accepted";
+    public static final String GET_FOUND = "Get: id found";
+    public static final String GET_NOT_FOUND = "Get: id not found";
 }
