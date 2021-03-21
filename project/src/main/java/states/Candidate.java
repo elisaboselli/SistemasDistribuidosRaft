@@ -27,7 +27,7 @@ public class Candidate {
 
         context.incrementTerm();
         context.setLeader(null);
-        context.show();
+        context.show(Constants.CANDIDATE);
 
         voters = context.getAllHosts();
 
@@ -71,7 +71,6 @@ public class Candidate {
             try {
                 socketUDP.receive(acceptorResponse);
             } catch (IOException e) {
-                // e.printStackTrace();
                 now = LocalDateTime.now();
                 System.out.println("timeout >>  [" + dtf.format(now) + "]");
                 context.restartSocket();
@@ -81,8 +80,7 @@ public class Candidate {
             Gson gson = new Gson();
             String serverResponseStr = JSONUtils.parseDatagramPacket(acceptorResponse);
             Message serverResponse = gson.fromJson(serverResponseStr, Message.class);
-
-            serverResponse.log(context.getPort(), true);
+            serverResponse.log(context.getPort(), true, context.getLogName());
             
             switch (serverResponse.getType()) {
 

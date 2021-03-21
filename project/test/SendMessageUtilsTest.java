@@ -23,6 +23,7 @@ public class SendMessageUtilsTest {
     private final PrintStream originalErr = System.err;
     private static final int port = 6787;
 
+    private static File storageFile;
     private static File logFile;
     private static List<Host> hosts;
     private static DatagramPacket datagramPacket;
@@ -30,6 +31,7 @@ public class SendMessageUtilsTest {
 
     @BeforeAll
     static void setContext() {
+        storageFile = new File(String.valueOf(port));
         logFile = new File(String.valueOf(port));
         hosts = new ArrayList<>();
         String msg = "something";
@@ -48,7 +50,7 @@ public class SendMessageUtilsTest {
         System.setErr(new PrintStream(err));
 
         try {
-            context = new Context(port, logFile.getName(), true);
+            context = new Context(port, storageFile.getName(), logFile.getName(), true);
             context.setAllHosts(hosts);
 
         } catch (SocketException e) {
@@ -71,7 +73,7 @@ public class SendMessageUtilsTest {
     @Test
     void test_sendHeartbeatMessage(){
 
-        context.setLogIndex(8);
+        context.setStorageIndex(8);
 
         SendMessageUtils.sendHeartBeat(context);
         List<String> output = parseMessage(out.toString());
@@ -87,7 +89,7 @@ public class SendMessageUtilsTest {
    @Test
     void test_sendPostulationMessage(){
 
-        context.setLogIndex(8);
+        context.setStorageIndex(8);
 
         SendMessageUtils.sendPostulation(hosts, context);
         List<String> output = parseMessage(out.toString());
@@ -196,7 +198,7 @@ public class SendMessageUtilsTest {
     @Test
     void test_sendAppendEntryResponseInconsistentLogMessage(){
 
-        context.setLogIndex(3);
+        context.setStorageIndex(3);
 
         SendMessageUtils.appendEntryResponse(context, datagramPacket,true, 5, true);
         List<String> output = parseMessage(out.toString());
@@ -212,7 +214,7 @@ public class SendMessageUtilsTest {
     @Test
     void test_sendInconsistentLogMessage(){
 
-        context.setLogIndex(3);
+        context.setStorageIndex(3);
 
         SendMessageUtils.inconsistentLog(context, datagramPacket);
         List<String> output = parseMessage(out.toString());
@@ -229,7 +231,7 @@ public class SendMessageUtilsTest {
     void test_sendUpdateInconsistentLogMessage(){
 
         Entry entry = new Entry(1,2,3,4);
-        context.setLogIndex(3);
+        context.setStorageIndex(3);
 
         SendMessageUtils.updateInconsistentLog(context, datagramPacket,entry);
         List<String> output = parseMessage(out.toString());

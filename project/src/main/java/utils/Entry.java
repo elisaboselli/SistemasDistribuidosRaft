@@ -27,7 +27,7 @@ public class Entry {
 
     public Entry(Context context, int id, int value){
         this.term = context.getTerm();
-        this.index = context.getLogIndex() + 1;
+        this.index = context.getStorageIndex() + 1;
         this.id = id;
         this.value = value;
         this.commited = false;

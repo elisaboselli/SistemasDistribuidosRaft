@@ -24,7 +24,7 @@ public class SendMessageUtils {
 
             // Send response
             context.getServerSocket().send(messageDP);
-            message.log(context.getPort(), false);
+            message.log(context.getPort(), false, context.getLogName());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -35,7 +35,7 @@ public class SendMessageUtils {
     // SERVERS MESSAGES -------------------------------------------------------------------------
 
     public static void sendHeartBeat(Context context) {
-        List<String> messageParams = Arrays.asList(String.valueOf(context.getLogIndex()));
+        List<String> messageParams = Arrays.asList(String.valueOf(context.getStorageIndex()));
         for (Host host : context.getAllHosts()) {
             sendMessage(context, host, Constants.HEART_BEAT_MESSAGE, messageParams);
         }
@@ -56,7 +56,7 @@ public class SendMessageUtils {
             context.setTerm(requestTerm);
             Host leaderHost = new Host(voteRequest.getAddress(), voteRequest.getPort());
             context.setLeader(leaderHost);
-            context.show();
+            context.show(Constants.FOLLOWER);
         }
 
         // Prepare & send response
@@ -81,7 +81,7 @@ public class SendMessageUtils {
             if(!wasInconsistentLog){
                 sendMessage(context, host, Constants.APPEND_SUCCESS, null);
             } else {
-                List<String> messageParams = Arrays.asList(String.valueOf(context.getLogIndex()));
+                List<String> messageParams = Arrays.asList(String.valueOf(context.getStorageIndex()));
                 sendMessage(context, host, Constants.INCONSISTENT_LOG, messageParams);
             }
         } else {
@@ -92,7 +92,7 @@ public class SendMessageUtils {
 
     public static void inconsistentLog(Context context, DatagramPacket request) {
         Host host = new Host(request.getAddress(), request.getPort());
-        List<String> messageParams = Arrays.asList(String.valueOf(context.getLogIndex()));
+        List<String> messageParams = Arrays.asList(String.valueOf(context.getStorageIndex()));
         sendMessage(context, host, Constants.INCONSISTENT_LOG, messageParams);
     }
 

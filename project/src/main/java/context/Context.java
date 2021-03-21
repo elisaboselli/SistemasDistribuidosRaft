@@ -20,17 +20,19 @@ public class Context {
     private List<Host> allHosts;
     private Host leader;
     private int term;
+    private String storageFile;
     private String logFile;
     private int timeout;
-    private int logIndex;
+    private int storageIndex;
 
-    public Context(int port, String logFile, Boolean isTest) throws SocketException {
+    public Context(int port, String storageFile, String logFile, Boolean isTest) throws SocketException {
         this.term = 0;
         this.port = port;
         this.leader = null;
         this.allHosts = obtainAllHosts(isTest);
+        this.storageFile = storageFile;
         this.logFile = logFile;
-        this.logIndex = 0;
+        this.storageIndex = 0;
         try {
             this.serverSocket = new DatagramSocket(port);
         } catch (SocketException e) {
@@ -126,11 +128,15 @@ public class Context {
         this.timeout = timeout;
     }
 
-    public int getLogIndex() { return this.logIndex; }
+    public int getStorageIndex() { return this.storageIndex; }
 
-    public void updateLogIndex() { this.logIndex++; }
+    public void updateLogIndex() { this.storageIndex++; }
 
-    public void setLogIndex(int index) { this.logIndex = index; }
+    public void setStorageIndex(int index) { this.storageIndex = index; }
+
+    public String getStorageName() {
+        return this.storageFile;
+    }
 
     public String getLogName() {
         return this.logFile;
@@ -148,11 +154,21 @@ public class Context {
         }
     }
 
-    public void show() {
-        System.out.println("--------------------------- CONTEXT --------------------------");
+    public void show(String role) {
+        System.out.println("--------------------------- CONTEXT UPDATED --------------------------");
+        System.out.println("Role: " + role);
         System.out.println("Port: " + this.port);
         System.out.println("Leader: " + this.leader);
         System.out.println("Term: " + this.term);
         System.out.println("Time out: " + this.timeout);
+
+        List<String> updatedContext = new ArrayList<>();
+        updatedContext.add("--------------------------- CONTEXT UPDATED --------------------------");
+        updatedContext.add("Role: " + role);
+        updatedContext.add("Port: " + this.port);
+        updatedContext.add("Leader: " + this.leader);
+        updatedContext.add("Term: " + this.term);
+        updatedContext.add("Time out: " + this.timeout);
+        JSONUtils.writeLogFile(this.logFile, updatedContext);
     }
 }

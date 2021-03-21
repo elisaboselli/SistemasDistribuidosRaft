@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.DatagramPacket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -18,8 +20,8 @@ public final class JSONUtils {
         return Host.fromJSONArray(jsonHosts);
     }
 
-    public static Log readLogFile(String fileName) {
-        String longFileName = Constants.FILES_PATH + Constants.LOGS_PATH + fileName;
+    public static Storage readStorageFile(String fileName) {
+        String longFileName = Constants.FILES_PATH + Constants.STORAGE_PATH + fileName;
         String line;
         String jsonStr = "";
 
@@ -40,23 +42,33 @@ public final class JSONUtils {
             System.out.println("Error reading file '" + fileName + "'");
         }
 
-        return Log.fromJSON(jsonStr);
+        return Storage.fromJSON(jsonStr);
     }
 
-    public static void writeLogFile(String fileName, String newLog) {
+    public static void writeStorageFile(String fileName, String updatedStorage) {
+        String path = Constants.FILES_PATH + Constants.STORAGE_PATH + fileName;
+        writeFile(path, Collections.singletonList(updatedStorage));
+    }
+
+    public static void writeLogFile(String fileName, List<String> newLog) {
+        String path = Constants.FILES_PATH + Constants.LOGS_PATH + fileName;
+        writeFile(path, newLog);
+    }
+
+    private static void writeFile(String path, List<String> input) {
         try {
-            FileWriter file = new FileWriter(Constants.FILES_PATH + Constants.LOGS_PATH + fileName, true);
+            FileWriter file = new FileWriter(path, true);
             BufferedWriter bufferedWriter = new BufferedWriter(file);
-            bufferedWriter.write(newLog);
-            bufferedWriter.newLine();
+            for(String line : input) {
+                bufferedWriter.write(line);
+                bufferedWriter.newLine();
+            }
             bufferedWriter.close();
-
         } catch (FileNotFoundException ex) {
-            System.out.println("Unable to open file '" + fileName + "'");
+            System.out.println("Unable to open file '" + path + "'");
             ex.printStackTrace();
-
         } catch (IOException e) {
-            System.out.println("Error writing file '" + fileName + "'");
+            System.out.println("Error writing file '" + path + "'");
         }
     }
 
@@ -97,16 +109,29 @@ public final class JSONUtils {
         return new String(data);
     }
 
-    public static String getFileName(String fileName) {
+    public static String getFileName(String fileName, Boolean isServer) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("YYYYMMddHHmm");
         LocalDateTime now = LocalDateTime.now();
         String datePrefix = dtf.format(now) + "-";
-        return datePrefix + fileName + ".txt";
+        String role = (isServer ? Constants.SERVER : Constants.CLIENT) + "-";
+        return datePrefix + role + fileName + ".txt";
     }
 
-    public static File createLogFile(String fileName) {
+    public static File createStorageFile(String fileName) {
 
-        File file = new File(Constants.FILES_PATH + Constants.LOGS_PATH + getFileName(fileName));
+        File file = new File(Constants.FILES_PATH + Constants.STORAGE_PATH + getFileName(fileName, true));
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return file;
+    }
+
+    public static File createLogFile(String fileName, Boolean isServer) {
+
+        File file = new File(Constants.FILES_PATH + Constants.LOGS_PATH + getFileName(fileName, isServer));
         try {
             file.createNewFile();
         } catch (IOException e) {

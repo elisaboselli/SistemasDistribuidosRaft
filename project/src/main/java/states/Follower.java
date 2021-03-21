@@ -9,13 +9,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import com.google.gson.Gson;
-
-import com.google.gson.JsonArray;
 import context.Context;
 import utils.*;
-
-import static utils.JSONUtils.parseDatagramPacket;
 
 public class Follower {
 
@@ -57,9 +52,9 @@ public class Follower {
     private static void processMessage(Context context, DatagramPacket request) {
 
         Message serverRequest = JSONUtils.messageFromJson(request);
-        serverRequest.log(context.getPort(), true);
+        serverRequest.log(context.getPort(), true, context.getLogName());
         List<String> params = serverRequest.getParams();
-        Log log;
+        Storage storage;
 
         switch (serverRequest.getType()) {
 
@@ -74,23 +69,23 @@ public class Follower {
                 context.setLeader(leaderHost);
 
                 int leaderIndex = Integer.parseInt(params.get(0));
-                if(leaderIndex != context.getLogIndex()) {
+                if(leaderIndex != context.getStorageIndex()) {
                     SendMessageUtils.inconsistentLog(context, request);
                 } else {
-                    log = JSONUtils.readLogFile(context.getLogName());
-                    Entry lastEntry = log.getLastEntry();
+                    storage = JSONUtils.readStorageFile(context.getStorageName());
+                    Entry lastEntry = storage.getLastEntry();
 
                     if(lastEntry != null && !lastEntry.isCommited()){
                         lastEntry.commit();
-                        JSONUtils.writeLogFile(context.getLogName(), log.toJson());
+                        JSONUtils.writeStorageFile(context.getStorageName(), storage.toJson());
                     }
                 }
                 break;
 
             case Constants.APPEND:
-                // 1º get log
-                log = JSONUtils.readLogFile(context.getLogName());
-                int logIndex = context.getLogIndex();
+                // 1º get storage
+                storage = JSONUtils.readStorageFile(context.getStorageName());
+                int logIndex = context.getStorageIndex();
 
                 // 2º create new entry and append
                 int index = Integer.parseInt(params.get(0));
@@ -103,12 +98,12 @@ public class Follower {
                     inconsistent_log = params.get(4) != null;
                 }
 
-                // Si los log estan consistententes hasta el momento, agrego la nueva entrada.
+                // Si los storage estan consistententes hasta el momento, agrego la nueva entrada.
                 Boolean consistent = logIndex == (index-1);
                 if(consistent) {
                     Entry entry = new Entry(index, term, id, value);
-                    log.appendEntry(entry);
-                    JSONUtils.writeLogFile(context.getLogName(), log.toJson());
+                    storage.appendEntry(entry);
+                    JSONUtils.writeStorageFile(context.getStorageName(), storage.toJson());
                     context.updateLogIndex();
                 }
 

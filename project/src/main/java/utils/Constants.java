@@ -3,6 +3,7 @@ package utils;
 public final class Constants {
 
     public static final String FILES_PATH = "textFiles/";
+    public static final String STORAGE_PATH = "storage/";
     public static final String LOGS_PATH = "logs/";
 
     public static final String ALL_SERVERS_FILE = "allServers.txt";
@@ -18,6 +19,13 @@ public final class Constants {
     public static final String RECEIVED = "Received";
 
     public static final int NO_TERM = 0;
+
+    public static final String SERVER = "server";
+    public static final String CLIENT = "client";
+
+    public static final String FOLLOWER = "Follower";
+    public static final String CANDIDATE = "Candidate";
+    public static final String LEADER = "Leader";
 
     // Message Types
     public static final String EMPTY_MESSAGE = "Empty Message";

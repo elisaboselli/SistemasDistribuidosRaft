@@ -1,5 +1,6 @@
 package udpServers;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -26,6 +27,7 @@ public class Client {
             // Create UDP Socket
             DatagramSocket socketUDP = new DatagramSocket(localPort);
             InetAddress hostServer = InetAddress.getByName("localhost");
+            File logFile = JSONUtils.createLogFile(String.valueOf(localPort), false);
 
             // Initialize scanner
             Scanner scan = new Scanner(System.in);
@@ -58,7 +60,7 @@ public class Client {
 
                 // Prepare request message
                 Message requestMessage = new Message(Constants.NO_TERM, messageType, localPort, serverPort, params);
-                requestMessage.log(localPort, false);
+                requestMessage.log(localPort, false, logFile.getName());
 
                 // Prepare datagram package
                 String requestMessageStr = requestMessage.toJson();
@@ -75,7 +77,7 @@ public class Client {
 
                 // Parse Response
                 Message responseMessage = JSONUtils.messageFromJson(response);
-                responseMessage.log(localPort, true);
+                responseMessage.log(localPort, true, logFile.getName());
 
                 // Prepare for next operation
                 nextOp = getNextOperationFromInput(scan);

@@ -23,10 +23,11 @@ class FSMTest {
         Context context = null;
         int originalTerm = 0;
 
+        File storageFile = new File(String.valueOf(port));
         File logFile = new File(String.valueOf(port));
 
         try {
-            context = new Context(port, logFile.getName(), true);
+            context = new Context(port, storageFile.getName(), logFile.getName(), true);
             originalTerm = context.getTerm();
             newState = state.execute(context);
             context.getServerSocket().close();
@@ -49,10 +50,11 @@ class FSMTest {
         Context context = null;
         int originalTerm = 0;
 
+        File storageFile = new File(String.valueOf(port));
         File logFile = new File(String.valueOf(port));
 
         try {
-            context = new Context(port, logFile.getName(), true);
+            context = new Context(port, storageFile.getName(), logFile.getName(), true);
             originalTerm = context.getTerm();
             newState = state.execute(context);
             context.getServerSocket().close();
@@ -74,6 +76,7 @@ class FSMTest {
         Context context = null;
         int originalTerm = 0;
 
+        File storageFile = new File(String.valueOf(port));
         File logFile = new File(String.valueOf(port));
 
         Thread thread = new Thread("SendVote") {
@@ -111,7 +114,7 @@ class FSMTest {
         thread.start();
 
         try {
-            context = new Context(port, logFile.getName(), true);
+            context = new Context(port, storageFile.getName(), logFile.getName(), true);
             originalTerm = context.getTerm();
             newState = state.execute(context);
             context.getServerSocket().close();
@@ -134,6 +137,7 @@ class FSMTest {
         State newState = null;
         Context context = null;
 
+        File storageFile = new File(String.valueOf(port));
         File logFile = new File(String.valueOf(port));
 
         Thread thread = new Thread("SendHeartBeat") {
@@ -169,7 +173,7 @@ class FSMTest {
         thread.start();
 
         try {
-            context = new Context(port, logFile.getName(), true);
+            context = new Context(port, storageFile.getName(), logFile.getName(), true);
             newState = state.execute(context);
             context.getServerSocket().close();
         } catch (SocketException e) {
@@ -190,6 +194,7 @@ class FSMTest {
         State newState = null;
         Context context = null;
 
+        File storageFile = new File(String.valueOf(port));
         File logFile = new File(String.valueOf(port));
 
         Thread thread = new Thread("SendPostulation") {
@@ -225,7 +230,7 @@ class FSMTest {
         thread.start();
 
         try {
-            context = new Context(port, logFile.getName(), true);
+            context = new Context(port, storageFile.getName(), logFile.getName(), true);
             newState = state.execute(context);
             context.getServerSocket().close();
         } catch (SocketException e) {
@@ -246,6 +251,7 @@ class FSMTest {
         State newState = null;
         Context context = null;
 
+        File storageFile = new File(String.valueOf(port));
         File logFile = new File(String.valueOf(port));
 
         Thread thread = new Thread("SendHeartBeat") {
@@ -281,7 +287,7 @@ class FSMTest {
         thread.start();
 
         try {
-            context = new Context(port, logFile.getName(), true);
+            context = new Context(port, storageFile.getName(), logFile.getName(), true);
             newState = state.execute(context);
             context.getServerSocket().close();
         } catch (SocketException e) {
@@ -302,6 +308,7 @@ class FSMTest {
         State newState = null;
         Context context = null;
 
+        File storageFile = new File(String.valueOf(port));
         File logFile = new File(String.valueOf(port));
 
         Thread thread = new Thread("SendPostulation") {
@@ -337,7 +344,7 @@ class FSMTest {
         thread.start();
 
         try {
-            context = new Context(port, logFile.getName(), true);
+            context = new Context(port, storageFile.getName(), logFile.getName(), true);
             newState = state.execute(context);
             context.getServerSocket().close();
         } catch (SocketException e) {

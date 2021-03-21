@@ -1,15 +1,15 @@
 import org.junit.jupiter.api.*;
 import utils.Entry;
-import utils.Log;
+import utils.Storage;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class LogTest {
+public class StorageTest {
 
     private static Entry entry1, entry2, entry3, entry4;
-    Log log;
+    Storage storage;
 
     @BeforeAll
     static void setEntry() {
@@ -22,19 +22,19 @@ public class LogTest {
 
     @BeforeEach
     void setLog() {
-        log = new Log();
+        storage = new Storage();
     }
 
     @Test
     void test_getEntryList_Empty(){
-        List<Entry> entryList = log.getEntryList();
+        List<Entry> entryList = storage.getEntryList();
         assertTrue(entryList.isEmpty());
     }
 
     @Test
     void test_getEntryList(){
-        log.appendEntry(entry1);
-        List<Entry> entryList = log.getEntryList();
+        storage.appendEntry(entry1);
+        List<Entry> entryList = storage.getEntryList();
 
         assertTrue(entryList.size()==1);
     }
@@ -42,46 +42,46 @@ public class LogTest {
     @Test
     void test_appendEntry(){
 
-        List<Entry> entryList = log.getEntryList();
+        List<Entry> entryList = storage.getEntryList();
         assertTrue(entryList.isEmpty());
 
-        log.appendEntry(entry1);
+        storage.appendEntry(entry1);
 
-        entryList = log.getEntryList();
+        entryList = storage.getEntryList();
         assertTrue(entryList.size()==1);
         assertTrue(entryList.get(0).equals(entry1));
     }
 
     @Test
     void test_getLastEntry(){
-        log.appendEntry(entry1);
-        log.appendEntry(entry2);
-        log.appendEntry(entry3);
-        log.appendEntry(entry4);
+        storage.appendEntry(entry1);
+        storage.appendEntry(entry2);
+        storage.appendEntry(entry3);
+        storage.appendEntry(entry4);
 
-        Entry entry = log.getLastEntry();
+        Entry entry = storage.getLastEntry();
         assertTrue(entry.equals(entry4));
     }
 
     @Test
     void test_getEntryByIndex_found(){
-        log.appendEntry(entry1);
-        log.appendEntry(entry2);
-        log.appendEntry(entry3);
-        log.appendEntry(entry4);
+        storage.appendEntry(entry1);
+        storage.appendEntry(entry2);
+        storage.appendEntry(entry3);
+        storage.appendEntry(entry4);
 
-        Entry entry = log.getEntryByIndex(7);
+        Entry entry = storage.getEntryByIndex(7);
         assertTrue(entry.equals(entry3));
     }
 
     @Test
     void test_getEntryByIndex_notFound(){
-        log.appendEntry(entry1);
-        log.appendEntry(entry2);
-        log.appendEntry(entry3);
-        log.appendEntry(entry4);
+        storage.appendEntry(entry1);
+        storage.appendEntry(entry2);
+        storage.appendEntry(entry3);
+        storage.appendEntry(entry4);
 
-        Entry entry = log.getEntryByIndex(10);
+        Entry entry = storage.getEntryByIndex(10);
         assertNull(entry);
     }
 
@@ -89,19 +89,19 @@ public class LogTest {
     void test_toJson(){
         String expected = "{\"entryList\":[{\"term\":3,\"index\":6,\"id\":11,\"value\":40,\"commited\":false,\"quorum\":1},{\"term\":2,\"index\":5,\"id\":10,\"value\":30,\"commited\":false,\"quorum\":1}]}";
 
-        log.appendEntry(entry1);
-        log.appendEntry(entry2);
+        storage.appendEntry(entry1);
+        storage.appendEntry(entry2);
 
-        String logStr = log.toJson();
-        assertEquals(logStr, expected);
+        String storageStr = storage.toJson();
+        assertEquals(storageStr, expected);
     }
 
     @Test
     void test_fromJson_Empty(){
-        String logStr = "";
+        String storageStr = "";
 
-        Log log = Log.fromJSON(logStr);
-        List<Entry> entryList = log.getEntryList();
+        Storage storage = Storage.fromJSON(storageStr);
+        List<Entry> entryList = storage.getEntryList();
 
         assertTrue(entryList.isEmpty());
 
@@ -109,12 +109,12 @@ public class LogTest {
 
     @Test
     void test_fromJson(){
-        String logStr = "{\"entryList\":[{\"term\":3,\"index\":6,\"id\":11,\"value\":40,\"commited\":false," +
+        String storageStr = "{\"entryList\":[{\"term\":3,\"index\":6,\"id\":11,\"value\":40,\"commited\":false," +
                 "\"quorum\":1}," +
                 "{\"term\":2,\"index\":5,\"id\":10,\"value\":30,\"commited\":false,\"quorum\":1}]}";
 
-        Log log = Log.fromJSON(logStr);
-        List<Entry> entryList = log.getEntryList();
+        Storage storage = Storage.fromJSON(storageStr);
+        List<Entry> entryList = storage.getEntryList();
 
         assertTrue(entryList.size() == 2);
 
@@ -129,19 +129,19 @@ public class LogTest {
 
     @Test
     void test_getLastIndex(){
-        log.appendEntry(entry1);
-        log.appendEntry(entry2);
-        log.appendEntry(entry3);
-        log.appendEntry(entry4);
+        storage.appendEntry(entry1);
+        storage.appendEntry(entry2);
+        storage.appendEntry(entry3);
+        storage.appendEntry(entry4);
 
-        int lastIndex = log.getLastIndex();
+        int lastIndex = storage.getLastIndex();
         assertEquals(lastIndex, 8);
     }
 
     @Test
     void test_getLastIndex_empty(){
 
-        int lastIndex = log.getLastIndex();
+        int lastIndex = storage.getLastIndex();
         assertEquals(lastIndex, 0);
     }
 
@@ -156,27 +156,27 @@ public class LogTest {
         Entry e5 = new Entry(4, 7, 10, 20);
         Entry e6 = new Entry(5, 8, 11, 80);
 
-        log.appendEntry(e1);
-        log.appendEntry(e2);
-        log.appendEntry(e3);
-        log.appendEntry(e4);
-        log.appendEntry(e5);
+        storage.appendEntry(e1);
+        storage.appendEntry(e2);
+        storage.appendEntry(e3);
+        storage.appendEntry(e4);
+        storage.appendEntry(e5);
 
         // Not exist
-        Entry entry = log.getCommitedEntryById(8);
+        Entry entry = storage.getCommitedEntryById(8);
         assertNull(entry);
 
         // Not commited
-        entry = log.getCommitedEntryById(11);
+        entry = storage.getCommitedEntryById(11);
         assertNull(entry);
 
         // Committed is last
-        entry = log.getCommitedEntryById(12);
+        entry = storage.getCommitedEntryById(12);
         assertNotNull(entry);
         assertEquals(entry.getValue(),50);
 
         // Commited is not last
-        entry = log.getCommitedEntryById(10);
+        entry = storage.getCommitedEntryById(10);
         assertNotNull(entry);
         assertEquals(entry.getValue(),30);
 

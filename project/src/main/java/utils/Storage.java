@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Log {
+public class Storage {
     private List<Entry> entryList;
 
-    public Log() {
+    public Storage() {
         this.entryList = new ArrayList<>();
     }
 
@@ -55,15 +55,15 @@ public class Log {
 
     public String toJson() {
         Gson gson = new Gson();
-        return gson.toJson(this, Log.class);
+        return gson.toJson(this, Storage.class);
     }
 
-    public static Log fromJSON(String jsonStr) {
+    public static Storage fromJSON(String jsonStr) {
         if(jsonStr.isEmpty()){
-            return new Log();
+            return new Storage();
         }
         Gson gson = new Gson();
-        return gson.fromJson(jsonStr, Log.class);
+        return gson.fromJson(jsonStr, Storage.class);
     }
 
     public int getLastIndex() {

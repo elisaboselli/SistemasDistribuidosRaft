@@ -25,7 +25,7 @@ public class Leader {
         System.out.println("START >>  [" + dtf.format(now) + "]\n");
 
         context.setLeader(null);
-        context.show();
+        context.show(Constants.LEADER);
 
         for (Host host : context.getAllHosts()) {
             System.out.println(">> Host: " + host.getPort());
@@ -74,9 +74,9 @@ public class Leader {
     public static void processMessage(Context context, DatagramPacket request) {
 
         Message serverRequest = JSONUtils.messageFromJson(request);
-        serverRequest.log(context.getPort(), true);
+        serverRequest.log(context.getPort(), true, context.getLogName());
         List<String> params = serverRequest.getParams();
-        Log log;
+        Storage storage;
         Entry entry;
         int id, value;
 
@@ -97,28 +97,28 @@ public class Leader {
                 break;
 
             case Constants.GET:
-                // 1º Get log and params
-                log = JSONUtils.readLogFile(context.getLogName());
+                // 1º Get storage and params
+                storage = JSONUtils.readStorageFile(context.getStorageName());
                 id = Integer.parseInt(params.get(0));
 
                 // 2º Search Entry
-                entry = log.getCommitedEntryById(id);
+                entry = storage.getCommitedEntryById(id);
 
                 // 3º Send Response
                 SendMessageUtils.sendResponseGetMessage(context,request, entry, id);
                 break;
 
             case Constants.SET:
-                // 1º get log
-                log = JSONUtils.readLogFile(context.getLogName());
+                // 1º get storage
+                storage = JSONUtils.readStorageFile(context.getStorageName());
 
                 // 2º create new entry and append
                 id = Integer.parseInt(params.get(0));
                 value = Integer.parseInt(params.get(1));
 
                 entry = new Entry(context, id, value);
-                log.appendEntry(entry);
-                JSONUtils.writeLogFile(context.getLogName(), log.toJson());
+                storage.appendEntry(entry);
+                JSONUtils.writeStorageFile(context.getStorageName(), storage.toJson());
                 context.updateLogIndex();
 
                 // 3º ask followers to append
@@ -127,8 +127,8 @@ public class Leader {
                 break;
 
             case Constants.APPEND_SUCCESS:
-                log = JSONUtils.readLogFile(context.getLogName());
-                Entry lastEntry = log.getLastEntry();
+                storage = JSONUtils.readStorageFile(context.getStorageName());
+                Entry lastEntry = storage.getLastEntry();
 
                 lastEntry.updateQuorum();
 
@@ -136,7 +136,7 @@ public class Leader {
                     lastEntry.commit();
                 }
 
-                JSONUtils.writeLogFile(context.getLogName(), log.toJson());
+                JSONUtils.writeStorageFile(context.getStorageName(), storage.toJson());
 
                 break;
 
@@ -144,9 +144,9 @@ public class Leader {
                 System.out.println("INCONSISTENT LOG");
 
                 int followerIndex = Integer.parseInt(params.get(0));
-                log = JSONUtils.readLogFile(context.getLogName());
+                storage = JSONUtils.readStorageFile(context.getStorageName());
 
-                entry = log.getEntryByIndex(followerIndex);
+                entry = storage.getEntryByIndex(followerIndex);
                 SendMessageUtils.updateInconsistentLog(context, request, entry);
 
                 break;

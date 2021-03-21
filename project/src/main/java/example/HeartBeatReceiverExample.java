@@ -59,7 +59,7 @@ public class HeartBeatReceiverExample {
                 Gson gson = new Gson();
                 String requestMessageStr = parseDatagramPacket(request);
                 Message heartBeatMessage = gson.fromJson(requestMessageStr, Message.class);
-                heartBeatMessage.log(localPort, true);
+                heartBeatMessage.log(localPort, true, "");
 
                 // Prepare response
                 List<String> messageParams = Arrays.asList("HeartBeat ok");

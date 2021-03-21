@@ -13,6 +13,7 @@ import java.net.UnknownHostException;
 
 
 class LeaderTest {
+    private File storageFile;
     private File logFile;
     private Context context;
     private Host host;
@@ -21,8 +22,9 @@ class LeaderTest {
     void testProcessMessage_postulation() {
 
         try {
+            storageFile = new File(String.valueOf(6787));
             logFile = new File(String.valueOf(6787));
-            context = new Context(6787, logFile.getName(), true);
+            context = new Context(6787, storageFile.getName(), logFile.getName(),true);
             host = new Host(InetAddress.getByName("localhost"), 6787);
         } catch (SocketException | UnknownHostException e) {
             e.printStackTrace();

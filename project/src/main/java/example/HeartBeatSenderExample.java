@@ -54,7 +54,7 @@ public class HeartBeatSenderExample {
                 Gson gson = new Gson();
                 String responseMessageStr = parseDatagramPacket(response);
                 Message responseMsg = gson.fromJson(responseMessageStr, Message.class);
-                responseMsg.log(localPort, true);
+                responseMsg.log(localPort, true, "");
 
                 heartBeatCount++;
             }
@@ -84,7 +84,7 @@ public class HeartBeatSenderExample {
             Message heartBeatMessage = new Message(0, Constants.HEART_BEAT_MESSAGE, localPort, remotePort,params);
             DatagramPacket heartBeat = new DatagramPacket(heartBeatMessage.toJson().getBytes(), heartBeatMessage.toJson().length(), localhost, remotePort);
             datagramSocket.send(heartBeat);
-            heartBeatMessage.log(localPort, false);
+            heartBeatMessage.log(localPort, false, "");
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

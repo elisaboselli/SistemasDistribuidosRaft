@@ -2,6 +2,7 @@ package utils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -13,6 +14,8 @@ public class Message {
     private int from;
     private int to;
     private List<String> params;
+
+    private final String separator = "----------------------------------------------------------------------";
 
     public Message(int term, String type, int from, int to, List<String> params) {
         this.term = term;
@@ -47,35 +50,40 @@ public class Message {
         return gson.toJson(this, Message.class);
     }
 
-    public void log(int localPort, Boolean received) {
+    public void log(int localPort, Boolean received, String fileName) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
+        List<String> log = new ArrayList<>();
 
-        System.out.println("--------------------------------------------------------------\n");
+        System.out.println(separator + "\n");
+        log.add(separator);
 
         // Message type
-        if (received) {
-            System.out.println("Message Received - Type: " + this.type);
-        } else {
-            System.out.println("Message Sent - Type: " + this.type);
-        }
+        String msgType = received ? ("Message Received - Type: " + this.type) : ("Message Sent - Type: " + this.type);
+        System.out.println(msgType);
+        log.add(msgType);
 
         // Sent or received
-        if (localPort == from) {
-            System.out.println("Sent to: " + this.to + " [" + dtf.format(now) + "]");
-        } else {
-            System.out.println("Received from: " + this.from + " [" + dtf.format(now) + "]");
-        }
+        String sentReceived = localPort == from ? ("Sent to: " + this.to) : ("Received from: " + this.from);
+        sentReceived = sentReceived.concat(" [" + dtf.format(now) + "]");
+        System.out.println(sentReceived);
+        log.add(sentReceived);
 
         // Params
-        System.out.print("Params: ");
+        String logParams = "Params: ";
         if( params != null) {
             for (String param : params) {
-                System.out.print(param + " ");
+                logParams = logParams.concat(param + " ");
             }
         }
+        System.out.print(logParams);
+        log.add(logParams);
 
         System.out.print("\n\n");
+
+        if(!fileName.isEmpty()){
+            JSONUtils.writeLogFile(fileName, log);
+        }
     }
 
 }

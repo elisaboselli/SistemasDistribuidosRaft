@@ -5,26 +5,23 @@ import java.net.SocketException;
 
 import context.Context;
 import states.State;
+import utils.Constants;
 import utils.JSONUtils;
 
 public class Server {
 
-    static State state;
-    static Context context;
+    private static State state;
+    private static Context context;
 
     public static void main(String args[]) {
         int port = Integer.parseInt(args[0]);
         state = State.FOLLOWER;
-        /*if (port == 6789) {
-            state = State.LEADER;
-        } else {
-            state = State.FOLLOWER;
-        }*/
 
-        File logFile = JSONUtils.createLogFile(String.valueOf(port));
+        File storageFile = JSONUtils.createStorageFile(String.valueOf(port));
+        File logFile = JSONUtils.createLogFile(String.valueOf(port), true);
         try {
-            context = new Context(port, logFile.getName(), false);
-            context.show();
+            context = new Context(port, storageFile.getName(), logFile.getName(), false);
+            context.show(Constants.FOLLOWER);
             while (state != State.HALT) {
                 state = state.execute(context);
             }
