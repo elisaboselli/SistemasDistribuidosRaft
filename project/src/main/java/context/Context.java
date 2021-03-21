@@ -39,6 +39,8 @@ public class Context {
         }
 
         switch (port) {
+            case 6791:
+            case 6790:
             case 6789:
                 this.timeout = 60000; // 1 minute
                 break;
