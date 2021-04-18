@@ -78,12 +78,13 @@ public class SendMessageUtils {
                                            Boolean wasInconsistentLog) {
         Host host = new Host(request.getAddress(), request.getPort());
         if(success){
-            if(!wasInconsistentLog){
+            sendMessage(context, host, Constants.APPEND_SUCCESS, null);
+            /*if(!wasInconsistentLog){
                 sendMessage(context, host, Constants.APPEND_SUCCESS, null);
             } else {
                 List<String> messageParams = Arrays.asList(String.valueOf(context.getStorageIndex()));
                 sendMessage(context, host, Constants.INCONSISTENT_LOG, messageParams);
-            }
+            }*/
         } else {
             List<String> messageParams = Collections.singletonList(String.valueOf(lastIndex));
             sendMessage(context, host, Constants.APPEND_FAIL, messageParams);

@@ -141,12 +141,11 @@ public class Leader {
                 break;
 
             case Constants.INCONSISTENT_LOG:
-                System.out.println("INCONSISTENT LOG");
 
                 int followerIndex = Integer.parseInt(params.get(0));
                 storage = JSONUtils.readStorageFile(context.getStorageName());
 
-                entry = storage.getEntryByIndex(followerIndex);
+                entry = storage.getEntryByIndex(followerIndex+1);
                 SendMessageUtils.updateInconsistentLog(context, request, entry);
 
                 break;

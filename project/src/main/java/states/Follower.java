@@ -101,7 +101,7 @@ public class Follower {
                 // Si los storage estan consistententes hasta el momento, agrego la nueva entrada.
                 Boolean consistent = logIndex == (index-1);
                 if(consistent) {
-                    Entry entry = new Entry(index, term, id, value);
+                    Entry entry = new Entry(term, index, id, value);
                     storage.appendEntry(entry);
                     JSONUtils.writeStorageFile(context.getStorageName(), storage.toJson());
                     context.updateLogIndex();
