@@ -163,16 +163,16 @@ public class SendMessageUtilsTest {
         assertEquals(port, Integer.parseInt(output.get(2)));
 
         List<String> params = Arrays.asList(output.get(3).split("\\s+"));
-        assertEquals(entry.getIndexStr(), params.get(0));
-        assertEquals(entry.getTermStr(), params.get(1));
-        assertEquals(entry.getIdStr(), params.get(2));
-        assertEquals(entry.getValueStr(), params.get(3));
+        assertEquals(entry.indexStr(), params.get(0));
+        assertEquals(entry.termStr(), params.get(1));
+        assertEquals(entry.idStr(), params.get(2));
+        assertEquals(entry.valueStr(), params.get(3));
     }
 
     @Test
     void test_sendAppendEntryResponseSuccesssMessage(){
 
-        SendMessageUtils.appendEntryResponse(context, datagramPacket,true, 5, false);
+        SendMessageUtils.appendEntryResponse(context, datagramPacket,true, 5);
         List<String> output = parseMessage(out.toString());
 
         assertEquals(Constants.SENT, output.get(0));
@@ -183,7 +183,7 @@ public class SendMessageUtilsTest {
     @Test
     void test_sendAppendEntryResponseFailureMessage(){
 
-        SendMessageUtils.appendEntryResponse(context, datagramPacket,false, 5, false);
+        SendMessageUtils.appendEntryResponse(context, datagramPacket,false, 5);
         List<String> output = parseMessage(out.toString());
 
         assertEquals(Constants.SENT, output.get(0));
@@ -200,15 +200,12 @@ public class SendMessageUtilsTest {
 
         context.setStorageIndex(3);
 
-        SendMessageUtils.appendEntryResponse(context, datagramPacket,true, 5, true);
+        SendMessageUtils.appendEntryResponse(context, datagramPacket,true, 5);
         List<String> output = parseMessage(out.toString());
 
         assertEquals(Constants.SENT, output.get(0));
-        assertEquals(Constants.INCONSISTENT_LOG, output.get(1));
+        assertEquals(Constants.APPEND_SUCCESS, output.get(1));
         assertEquals(port, Integer.parseInt(output.get(2)));
-
-        List<String> params = Arrays.asList(output.get(3).split("\\s+"));
-        assertEquals("3", params.get(0));
     }
 
     @Test
@@ -241,10 +238,10 @@ public class SendMessageUtilsTest {
         assertEquals(port, Integer.parseInt(output.get(2)));
 
         List<String> params = Arrays.asList(output.get(3).split("\\s+"));
-        assertEquals(entry.getIndexStr(), params.get(0));
-        assertEquals(entry.getTermStr(), params.get(1));
-        assertEquals(entry.getIdStr(), params.get(2));
-        assertEquals(entry.getValueStr(), params.get(3));
+        assertEquals(entry.indexStr(), params.get(0));
+        assertEquals(entry.termStr(), params.get(1));
+        assertEquals(entry.idStr(), params.get(2));
+        assertEquals(entry.valueStr(), params.get(3));
         assertEquals(Constants.UPDATE, params.get(4));
     }
 

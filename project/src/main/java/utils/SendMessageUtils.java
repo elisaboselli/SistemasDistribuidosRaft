@@ -68,23 +68,16 @@ public class SendMessageUtils {
 
     public static void appendEntry(Context context, Entry entry) {
         for (Host host : context.getAllHosts()) {
-            List<String> messageParams = Arrays.asList(entry.getIndexStr(), entry.getTermStr(), entry.getIdStr(),
-                    entry.getValueStr());
+            List<String> messageParams = Arrays.asList(entry.indexStr(), entry.termStr(), entry.idStr(),
+                    entry.valueStr());
             sendMessage(context, host, Constants.APPEND, messageParams);
         }
     }
 
-    public static void appendEntryResponse(Context context, DatagramPacket request, Boolean success, int lastIndex,
-                                           Boolean wasInconsistentLog) {
+    public static void appendEntryResponse(Context context, DatagramPacket request, Boolean success, int lastIndex) {
         Host host = new Host(request.getAddress(), request.getPort());
         if(success){
             sendMessage(context, host, Constants.APPEND_SUCCESS, null);
-            /*if(!wasInconsistentLog){
-                sendMessage(context, host, Constants.APPEND_SUCCESS, null);
-            } else {
-                List<String> messageParams = Arrays.asList(String.valueOf(context.getStorageIndex()));
-                sendMessage(context, host, Constants.INCONSISTENT_LOG, messageParams);
-            }*/
         } else {
             List<String> messageParams = Collections.singletonList(String.valueOf(lastIndex));
             sendMessage(context, host, Constants.APPEND_FAIL, messageParams);
@@ -99,8 +92,8 @@ public class SendMessageUtils {
 
     public static void updateInconsistentLog(Context context, DatagramPacket request, Entry entry) {
         Host host = new Host(request.getAddress(), request.getPort());
-        List<String> messageParams =Arrays.asList(entry.getIndexStr(), entry.getTermStr(), entry.getIdStr(),
-                entry.getValueStr(), Constants.UPDATE);
+        List<String> messageParams =Arrays.asList(entry.indexStr(), entry.termStr(), entry.idStr(),
+                entry.valueStr(), Constants.UPDATE);
         sendMessage(context, host, Constants.APPEND, messageParams);
     }
 
@@ -115,7 +108,7 @@ public class SendMessageUtils {
     }
 
     public static void acceptSetMessage(Context context, DatagramPacket request, Entry entry) {
-        List<String> messageParams = Arrays.asList(entry.getIdStr(), entry.getValueStr());
+        List<String> messageParams = Arrays.asList(entry.idStr(), entry.valueStr());
         Host host = new Host(request.getAddress(), request.getPort());
         sendMessage(context, host, Constants.SET_ACCEPTED, messageParams);
     }
@@ -125,7 +118,7 @@ public class SendMessageUtils {
         String messageType;
 
         if(entry != null) {
-            messageParams = Arrays.asList(entry.getIdStr(), entry.getValueStr());
+            messageParams = Arrays.asList(entry.idStr(), entry.valueStr());
             messageType = Constants.GET_FOUND;
         } else {
             messageParams = Arrays.asList(String.valueOf(id));

@@ -100,7 +100,7 @@ public class StorageTest {
     void test_fromJson_Empty(){
         String storageStr = "";
 
-        Storage storage = Storage.fromJSON(storageStr);
+        Storage storage = Storage.fromJsonArray(storageStr);
         List<Entry> entryList = storage.getEntryList();
 
         assertTrue(entryList.isEmpty());
@@ -109,11 +109,11 @@ public class StorageTest {
 
     @Test
     void test_fromJson(){
-        String storageStr = "{\"entryList\":[{\"term\":3,\"index\":6,\"id\":11,\"value\":40,\"commited\":false," +
+        String storageStr = "[{\"term\":3,\"index\":6,\"id\":11,\"value\":40,\"commited\":false," +
                 "\"quorum\":1}," +
-                "{\"term\":2,\"index\":5,\"id\":10,\"value\":30,\"commited\":false,\"quorum\":1}]}";
+                "{\"term\":2,\"index\":5,\"id\":10,\"value\":30,\"commited\":false,\"quorum\":1}]";
 
-        Storage storage = Storage.fromJSON(storageStr);
+        Storage storage = Storage.fromJsonArray(storageStr);
         List<Entry> entryList = storage.getEntryList();
 
         assertTrue(entryList.size() == 2);

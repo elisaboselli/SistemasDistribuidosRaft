@@ -3,6 +3,7 @@ package utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import context.Context;
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -34,6 +35,15 @@ public class Entry {
         this.quorum = 1;
     }
 
+    private Entry(int term, int index, int id, int value, boolean commited, int quorum) {
+        this.term = term;
+        this.index = index;
+        this.id = id;
+        this.value = value;
+        this.commited = commited;
+        this.quorum = quorum;
+    }
+
     public int getTerm() { return this.term; }
 
     public int getIndex() { return this.index; }
@@ -42,13 +52,13 @@ public class Entry {
 
     public int getValue() { return this.value; }
 
-    public String getIndexStr() { return String.valueOf(this.index); }
+    public String indexStr() { return String.valueOf(this.index); }
 
-    public String getTermStr() { return String.valueOf(this.term); }
+    public String termStr() { return String.valueOf(this.term); }
 
-    public String getIdStr() { return String.valueOf(this.id); }
+    public String idStr() { return String.valueOf(this.id); }
 
-    public String getValueStr() { return String.valueOf(this.value); }
+    public String valueStr() { return String.valueOf(this.value); }
 
     public void commit() { this.commited = true; }
 
@@ -64,9 +74,15 @@ public class Entry {
         return gson.toJson(this, Entry.class);
     }
 
-    public static Host fromJSON(String jsonStr) {
-        Gson gson = new Gson();
-        return gson.fromJson(jsonStr, Host.class);
+    public static Entry fromJSON(JSONObject jsonEntry) {
+        return new Entry(
+                jsonEntry.optInt("term"),
+                jsonEntry.optInt("index"),
+                jsonEntry.optInt("id"),
+                jsonEntry.optInt("value"),
+                jsonEntry.optBoolean("commited"),
+                jsonEntry.optInt("quorum")
+        );
     }
 
     public static List<Entry> fromJSONArray(String jsonStr) {

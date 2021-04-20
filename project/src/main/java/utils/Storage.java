@@ -1,6 +1,9 @@
 package utils;
 
 import com.google.gson.Gson;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +25,10 @@ public class Storage {
 
     public void appendEntry(Entry entry) {
         this.entryList.add(0, entry);
+    }
+
+    public void addEntry(Entry entry){
+        this.entryList.add(entry);
     }
 
     public Entry getEntryByIndex(int index){
@@ -58,12 +65,31 @@ public class Storage {
         return gson.toJson(this, Storage.class);
     }
 
-    public static Storage fromJSON(String jsonStr) {
+    public static Storage q(String jsonStr) {
         if(jsonStr.isEmpty()){
             return new Storage();
         }
         Gson gson = new Gson();
         return gson.fromJson(jsonStr, Storage.class);
+    }
+
+    public JSONArray toJsonArray() {
+        return new JSONArray(entryList);
+    }
+
+    public static Storage fromJsonArray(String jsonStr){
+        Storage storage = new Storage();
+
+        if(jsonStr != null && !jsonStr.equals("")){
+            JSONArray jsonArray = new JSONArray(jsonStr);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonEntry = jsonArray.getJSONObject(i);
+                Entry entry = Entry.fromJSON(jsonEntry);
+                storage.addEntry(entry);
+            }
+        }
+
+        return storage;
     }
 
     public int getLastIndex() {

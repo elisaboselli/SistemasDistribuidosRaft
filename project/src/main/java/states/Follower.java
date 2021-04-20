@@ -77,7 +77,7 @@ public class Follower {
 
                     if(lastEntry != null && !lastEntry.isCommited()){
                         lastEntry.commit();
-                        JSONUtils.writeStorageFile(context.getStorageName(), storage.toJson());
+                        JSONUtils.writeStorageFile(context.getStorageName(), storage.toJsonArray());
                     }
                 }
                 break;
@@ -93,22 +93,18 @@ public class Follower {
                 int id = Integer.parseInt(params.get(2));
                 int value = Integer.parseInt(params.get(3));
 
-                boolean inconsistent_log = false;
-                if (params.size()>4) {
-                    inconsistent_log = params.get(4) != null;
-                }
 
                 // Si los storage estan consistententes hasta el momento, agrego la nueva entrada.
                 Boolean consistent = logIndex == (index-1);
                 if(consistent) {
                     Entry entry = new Entry(term, index, id, value);
                     storage.appendEntry(entry);
-                    JSONUtils.writeStorageFile(context.getStorageName(), storage.toJson());
+                    JSONUtils.writeStorageFile(context.getStorageName(), storage.toJsonArray());
                     context.updateLogIndex();
                 }
 
                 // Y respondo el append
-                SendMessageUtils.appendEntryResponse(context, request, consistent, logIndex+1, inconsistent_log);
+                SendMessageUtils.appendEntryResponse(context, request, consistent, logIndex+1);
 
 
                 break;

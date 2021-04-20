@@ -118,7 +118,7 @@ public class Leader {
 
                 entry = new Entry(context, id, value);
                 storage.appendEntry(entry);
-                JSONUtils.writeStorageFile(context.getStorageName(), storage.toJson());
+                JSONUtils.writeStorageFile(context.getStorageName(), storage.toJsonArray());
                 context.updateLogIndex();
 
                 // 3º ask followers to append
@@ -136,7 +136,7 @@ public class Leader {
                     lastEntry.commit();
                 }
 
-                JSONUtils.writeStorageFile(context.getStorageName(), storage.toJson());
+                JSONUtils.writeStorageFile(context.getStorageName(), storage.toJsonArray());
 
                 break;
 
