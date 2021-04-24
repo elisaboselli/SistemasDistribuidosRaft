@@ -35,7 +35,7 @@ public class SendMessageUtils {
     // SERVERS MESSAGES -------------------------------------------------------------------------
 
     public static void sendHeartBeat(Context context) {
-        List<String> messageParams = Arrays.asList(String.valueOf(context.getStorageIndex()));
+        List<String> messageParams = Arrays.asList(String.valueOf(context.getTerm()), String.valueOf(context.getStorageIndex()));
         for (Host host : context.getAllHosts()) {
             sendMessage(context, host, Constants.HEART_BEAT_MESSAGE, messageParams);
         }
@@ -74,10 +74,14 @@ public class SendMessageUtils {
         }
     }
 
-    public static void appendEntryResponse(Context context, DatagramPacket request, Boolean success, int lastIndex) {
+    public static void appendEntryResponse(Context context, DatagramPacket request, Boolean success, int lastIndex, Boolean inconsistentLog) {
         Host host = new Host(request.getAddress(), request.getPort());
         if(success){
-            sendMessage(context, host, Constants.APPEND_SUCCESS, null);
+            if (inconsistentLog) {
+                sendMessage(context, host, Constants.UPDATE_SUCCESS, null);
+            } else {
+                sendMessage(context, host, Constants.APPEND_SUCCESS, null);
+            }
         } else {
             List<String> messageParams = Collections.singletonList(String.valueOf(lastIndex));
             sendMessage(context, host, Constants.APPEND_FAIL, messageParams);
@@ -92,8 +96,8 @@ public class SendMessageUtils {
 
     public static void updateInconsistentLog(Context context, DatagramPacket request, Entry entry) {
         Host host = new Host(request.getAddress(), request.getPort());
-        List<String> messageParams =Arrays.asList(entry.indexStr(), entry.termStr(), entry.idStr(),
-                entry.valueStr(), Constants.UPDATE);
+        List<String> messageParams = Arrays.asList(entry.indexStr(), entry.termStr(), entry.idStr(),
+                entry.valueStr(), entry.commitedStr(), Constants.UPDATE);
         sendMessage(context, host, Constants.APPEND, messageParams);
     }
 
@@ -101,7 +105,7 @@ public class SendMessageUtils {
     // CLIENT MESSAGES --------------------------------------------------------------------------
 
     public static void rejectSetMessage(Context context, DatagramPacket request) {
-        List<String> messageParams = Arrays.asList(context.getLeader().getAddress().toString(),
+        List<String> messageParams = Arrays.asList("Connect to: ", context.getLeader().getAddress().toString(),
                 String.valueOf(context.getLeader().getPort()));
         Host host = new Host(request.getAddress(), request.getPort());
         sendMessage(context, host, Constants.NOT_LEADER, messageParams);

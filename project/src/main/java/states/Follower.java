@@ -67,8 +67,9 @@ public class Follower {
             case Constants.HEART_BEAT_MESSAGE:
                 Host leaderHost = new Host(request.getAddress(), request.getPort());
                 context.setLeader(leaderHost);
+                context.setTerm(Integer.parseInt(params.get(0)));
 
-                int leaderIndex = Integer.parseInt(params.get(0));
+                int leaderIndex = Integer.parseInt(params.get(1));
                 if(leaderIndex != context.getStorageIndex()) {
                     SendMessageUtils.inconsistentLog(context, request);
                 } else {
@@ -93,18 +94,30 @@ public class Follower {
                 int id = Integer.parseInt(params.get(2));
                 int value = Integer.parseInt(params.get(3));
 
+                boolean inconsistent_log = false;
+                boolean commited = false;
+
+                if(params.size() > 4) {
+                    commited = Boolean.parseBoolean(params.get(4));
+                    inconsistent_log = params.get(5) != null;
+                }
 
                 // Si los storage estan consistententes hasta el momento, agrego la nueva entrada.
                 Boolean consistent = logIndex == (index-1);
                 if(consistent) {
                     Entry entry = new Entry(term, index, id, value);
+
+                    if(inconsistent_log && commited) {
+                        entry.commit();
+                    }
+
                     storage.appendEntry(entry);
                     JSONUtils.writeStorageFile(context.getStorageName(), storage.toJsonArray());
                     context.updateLogIndex();
                 }
 
                 // Y respondo el append
-                SendMessageUtils.appendEntryResponse(context, request, consistent, logIndex+1);
+                SendMessageUtils.appendEntryResponse(context, request, consistent, logIndex+1, inconsistent_log);
 
 
                 break;
@@ -115,7 +128,15 @@ public class Follower {
                 break;
 
             case Constants.GET:
-                // TODO: Acá debería responder ?
+                // 1º Get storage and params
+                storage = JSONUtils.readStorageFile(context.getStorageName());
+                id = Integer.parseInt(params.get(0));
+
+                // 2º Search Entry
+                Entry entry = storage.getCommitedEntryById(id);
+
+                // 3º Send Response
+                SendMessageUtils.sendResponseGetMessage(context,request, entry, id);
                 break;
 
             // TODO: Other messages

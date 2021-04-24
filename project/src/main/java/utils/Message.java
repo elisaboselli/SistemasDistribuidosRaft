@@ -55,34 +55,37 @@ public class Message {
         LocalDateTime now = LocalDateTime.now();
         List<String> log = new ArrayList<>();
 
-        System.out.println(separator + "\n");
-        log.add(separator);
+        if(!this.type.equals(Constants.HEART_BEAT_MESSAGE)) {
 
-        // Message type
-        String msgType = received ? ("Message Received - Type: " + this.type) : ("Message Sent - Type: " + this.type);
-        System.out.println(msgType);
-        log.add(msgType);
+            System.out.println(separator + "\n");
+            log.add(separator);
 
-        // Sent or received
-        String sentReceived = localPort == from ? ("Sent to: " + this.to) : ("Received from: " + this.from);
-        sentReceived = sentReceived.concat(" [" + dtf.format(now) + "]");
-        System.out.println(sentReceived);
-        log.add(sentReceived);
+            // Message type
+            String msgType = received ? ("Message Received - Type: " + this.type) : ("Message Sent - Type: " + this.type);
+            System.out.println(msgType);
+            log.add(msgType);
 
-        // Params
-        String logParams = "Params: ";
-        if( params != null) {
-            for (String param : params) {
-                logParams = logParams.concat(param + " ");
+            // Sent or received
+            String sentReceived = localPort == from ? ("Sent to: " + this.to) : ("Received from: " + this.from);
+            sentReceived = sentReceived.concat(" [" + dtf.format(now) + "]");
+            System.out.println(sentReceived);
+            log.add(sentReceived);
+
+            // Params
+            String logParams = "Params: ";
+            if (params != null) {
+                for (String param : params) {
+                    logParams = logParams.concat(param + " ");
+                }
             }
-        }
-        System.out.print(logParams);
-        log.add(logParams);
+            System.out.print(logParams);
+            log.add(logParams);
 
-        System.out.print("\n\n");
+            System.out.print("\n\n");
 
-        if(!fileName.isEmpty()){
-            JSONUtils.writeLogFile(fileName, log);
+            if (!fileName.isEmpty()) {
+                JSONUtils.writeLogFile(fileName, log);
+            }
         }
     }
 

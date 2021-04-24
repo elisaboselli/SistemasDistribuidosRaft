@@ -12,8 +12,7 @@ public final class Constants {
 
     public static final int MIN_TIMEOUT = 60000; // 1 minute
     public static final int MAX_TIMEOUT = 120000; // 2 minutes
-    // public static final int HEART_BEAT = 10000; // 10 seconds
-    public static final int HEART_BEAT = 5000; // 5 seconds
+    public static final int HEART_BEAT = 10000; // 10 seconds
 
     public static final String SENT = "Sent";
     public static final String RECEIVED = "Received";
@@ -41,6 +40,7 @@ public final class Constants {
     public static final String APPEND = "append";
     public static final String APPEND_SUCCESS = "append_success";
     public static final String APPEND_FAIL = "append_fail";
+    public static final String UPDATE_SUCCESS = "update_success";
 
     public static final String CONSISTENT_LOG = "consistent_log";
     public static final String INCONSISTENT_LOG = "inconsistent_log";

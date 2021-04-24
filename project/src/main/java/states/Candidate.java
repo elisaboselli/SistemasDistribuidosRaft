@@ -78,10 +78,10 @@ public class Candidate {
             }
 
             Gson gson = new Gson();
-            String serverResponseStr = JSONUtils.parseDatagramPacket(acceptorResponse);
-            Message serverResponse = gson.fromJson(serverResponseStr, Message.class);
+            Message serverResponse = JSONUtils.messageFromJson(acceptorResponse);
             serverResponse.log(context.getPort(), true, context.getLogName());
-            
+            List<String> params = serverResponse.getParams();
+
             switch (serverResponse.getType()) {
 
             case Constants.VOTE_OK:
@@ -91,10 +91,12 @@ public class Candidate {
                 break;
 
             case Constants.HEART_BEAT_MESSAGE:
-                if (serverResponse.getTerm() >= context.getTerm()) {
+                int leaderTerm = Integer.parseInt(params.get(0));
+
+                if (leaderTerm >= context.getTerm()) {
                     Host leaderHost = new Host(acceptorResponse.getAddress(), acceptorResponse.getPort());
                     context.setLeader(leaderHost);
-                    context.setTerm(serverResponse.getTerm());
+                    context.setTerm(leaderTerm);
                     return State.FOLLOWER;
                 }
                 break;

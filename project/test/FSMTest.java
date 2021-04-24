@@ -148,7 +148,8 @@ class FSMTest {
                     InetAddress hostServer = InetAddress.getByName("localhost");
 
                     // Prepare menssage
-                    Message responseMessage = new Message(3, Constants.HEART_BEAT_MESSAGE,1234, port,null);
+                    List<String> params = Arrays.asList("3","5");
+                    Message responseMessage = new Message(3, Constants.HEART_BEAT_MESSAGE,1234, port,params);
 
                     // Prepare datagram packet
                     String requestMessageStr = responseMessage.toJson();

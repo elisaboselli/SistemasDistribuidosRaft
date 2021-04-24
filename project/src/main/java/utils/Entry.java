@@ -60,6 +60,8 @@ public class Entry {
 
     public String valueStr() { return String.valueOf(this.value); }
 
+    public String commitedStr() { return String.valueOf(this.commited); }
+
     public void commit() { this.commited = true; }
 
     public boolean isCommited() { return this.commited; }
