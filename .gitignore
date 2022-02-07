@@ -82,7 +82,6 @@ proyecto/.gitignore
 /*/out
 /*/*/build
 /*/*/production
-*.iml
 *.iws
 *.ipr
 *~
