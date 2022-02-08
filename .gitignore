@@ -76,7 +76,6 @@ proyecto/.gitignore
 .settings
 
 # Android Studio
-.idea/
 .gradle
 /*/local.properties
 /*/out
