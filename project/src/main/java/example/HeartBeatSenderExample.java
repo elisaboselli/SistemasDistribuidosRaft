@@ -30,14 +30,16 @@ public class HeartBeatSenderExample {
 
             // Open UDP Socket
             int localPort = 6790;
+            String localAddress = "localhost";
             DatagramSocket socketUDP = new DatagramSocket(localPort);
             int serverPort = 6789;
+            String serverAddress = "localhost";
 
             // Heart Beat Sender
             TimerTask timerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    sendHeartBeat(socketUDP, localPort, serverPort);
+                    sendHeartBeat(socketUDP, localPort, localAddress, serverPort, serverAddress);
                 }
             };
 
@@ -77,11 +79,11 @@ public class HeartBeatSenderExample {
         return new String(data);
     }
 
-    private static void sendHeartBeat(DatagramSocket datagramSocket, int localPort, int remotePort) {
+    private static void sendHeartBeat(DatagramSocket datagramSocket, int localPort, String localAddress, int remotePort, String remoteAddress) {
         try {
             List<String> params = new ArrayList<String>();
             InetAddress localhost = InetAddress.getByName("localhost");
-            Message heartBeatMessage = new Message(0, Constants.HEART_BEAT_MESSAGE, localPort, remotePort,params);
+            Message heartBeatMessage = new Message(0, Constants.HEART_BEAT_MESSAGE, localPort, localAddress, remotePort, remoteAddress, params);
             DatagramPacket heartBeat = new DatagramPacket(heartBeatMessage.toJson().getBytes(), heartBeatMessage.toJson().length(), localhost, remotePort);
             datagramSocket.send(heartBeat);
             heartBeatMessage.log(localPort, false, "");

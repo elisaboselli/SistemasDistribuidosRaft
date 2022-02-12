@@ -85,7 +85,7 @@ public class Candidate {
             switch (serverResponse.getType()) {
 
             case Constants.VOTE_OK:
-                voters = voters.stream().filter(h -> h.getPort() != serverResponse.getFrom())
+                voters = voters.stream().filter(h -> h.getPort() != serverResponse.getPortFrom())
                         .collect(Collectors.toList());
                 votes++;
                 break;

@@ -1,9 +1,7 @@
 package context;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +13,7 @@ import utils.JSONUtils;
 public class Context {
     //private final static int WAIT_TIME = 60000;
     private int port;
+    private String address;
     private DatagramSocket serverSocket;
     // private byte[] buffer;
     private List<Host> allHosts;
@@ -34,10 +33,10 @@ public class Context {
         this.logFile = logFile;
         this.storageIndex = 0;
         try {
+            this.address = InetAddress.getLocalHost().getHostAddress();
             this.serverSocket = new DatagramSocket(port);
-        } catch (SocketException e) {
+        } catch (SocketException | UnknownHostException e) {
             System.out.println("Socket exception: " + e.getMessage());
-            throw e;
         }
 
         switch (port) {
@@ -94,6 +93,10 @@ public class Context {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     public DatagramSocket getServerSocket() {
@@ -157,6 +160,7 @@ public class Context {
     public void show(String role) {
         System.out.println("--------------------------- CONTEXT UPDATED --------------------------");
         System.out.println("Role: " + role);
+        System.out.println("Address: " + this.address);
         System.out.println("Port: " + this.port);
         System.out.println("Leader: " + this.leader);
         System.out.println("Term: " + this.term);
@@ -165,6 +169,7 @@ public class Context {
         List<String> updatedContext = new ArrayList<>();
         updatedContext.add("--------------------------- CONTEXT UPDATED --------------------------");
         updatedContext.add("Role: " + role);
+        updatedContext.add("Address: " + this.address);
         updatedContext.add("Port: " + this.port);
         updatedContext.add("Leader: " + this.leader);
         updatedContext.add("Term: " + this.term);

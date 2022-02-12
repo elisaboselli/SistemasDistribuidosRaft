@@ -30,7 +30,7 @@ class LeaderTest {
             e.printStackTrace();
         }
 
-        Message message = new Message(1, Constants.POSTULATION, 1234, context.getPort(), null);
+        Message message = new Message(1, Constants.POSTULATION, 1234, "localhost", context.getPort(), "localhost", null);
         String messageStr = message.toJson();
         DatagramPacket postulationMessage = new DatagramPacket(messageStr.getBytes(), messageStr.length(), host.getAddress(), host.getPort());
 

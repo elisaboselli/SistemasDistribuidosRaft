@@ -39,6 +39,7 @@ public class HeartBeatReceiverExample {
 
             // Open UDP Socket
             int localPort = 6789;
+            String localAddress = "localhost";
             DatagramSocket socketUDP = new DatagramSocket(localPort);
 
             //while(heartBeatCount < 5){
@@ -63,8 +64,8 @@ public class HeartBeatReceiverExample {
 
                 // Prepare response
                 List<String> messageParams = Arrays.asList("HeartBeat ok");
-                Message responseMessage = new Message(0, Constants.EMPTY_MESSAGE, localPort,
-                    request.getPort(),messageParams);
+                Message responseMessage = new Message(0, Constants.EMPTY_MESSAGE, localPort, localAddress,
+                    request.getPort(), request.getAddress().toString(), messageParams);
 
                 // Prepare datagram packet
                 String responseMessageStr = responseMessage.toJson();

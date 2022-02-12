@@ -14,8 +14,8 @@ public class SendMessageUtils {
         try {
 
             // Prepare message
-            Message message = new Message(context.getTerm(), messageType, context.getPort(),
-                    hostTo.getPort(), messageParams);
+            Message message = new Message(context.getTerm(), messageType, context.getPort(), context.getAddress(),
+                    hostTo.getPort(), hostTo.getAddress().toString(), messageParams);
 
             // Prepare datagram packet
             String messageStr = message.toJson();

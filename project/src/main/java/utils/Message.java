@@ -11,17 +11,21 @@ public class Message {
 
     private int term;
     private String type;
-    private int from;
-    private int to;
+    private int portFrom;
+    private String addressFrom;
+    private int portTo;
+    private String addressTo;
     private List<String> params;
 
     private final String separator = "----------------------------------------------------------------------";
 
-    public Message(int term, String type, int from, int to, List<String> params) {
+    public Message(int term, String type, int portFrom, String addressFrom, int portTo, String addressTo, List<String> params) {
         this.term = term;
         this.type = type;
-        this.from = from;
-        this.to = to;
+        this.portFrom = portFrom;
+        this.addressFrom = addressFrom;
+        this.portTo = portTo;
+        this.addressTo = addressTo;
         this.params = params;
     }
 
@@ -33,12 +37,12 @@ public class Message {
         return this.type;
     }
 
-    public int getFrom() {
-        return this.from;
+    public int getPortFrom() {
+        return this.portFrom;
     }
 
-    public int getTo() {
-        return this.to;
+    public int getPortTo() {
+        return this.portTo;
     }
 
     public List<String> getParams() {
@@ -66,7 +70,7 @@ public class Message {
             log.add(msgType);
 
             // Sent or received
-            String sentReceived = localPort == from ? ("Sent to: " + this.to) : ("Received from: " + this.from);
+            String sentReceived = localPort == portFrom ? ("Sent to: " + this.addressTo + ":" + this.portTo) : ("Received from: " + this.addressTo + ":"  + this.portFrom);
             sentReceived = sentReceived.concat(" [" + dtf.format(now) + "]");
             System.out.println(sentReceived);
             log.add(sentReceived);

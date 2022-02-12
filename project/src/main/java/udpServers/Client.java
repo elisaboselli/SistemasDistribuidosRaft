@@ -22,7 +22,10 @@ public class Client {
 
             // Initialize ports
             int localPort = 6790;
+            String localAddress = InetAddress.getLocalHost().getHostAddress();
+
             int serverPort = Integer.parseInt(args[0]);
+            String serverAddress = args[1];
 
             // Create UDP Socket
             DatagramSocket socketUDP = new DatagramSocket(localPort);
@@ -59,7 +62,7 @@ public class Client {
                 }
 
                 // Prepare request message
-                Message requestMessage = new Message(Constants.NO_TERM, messageType, localPort, serverPort, params);
+                Message requestMessage = new Message(Constants.NO_TERM, messageType, localPort, localAddress, serverPort, serverAddress, params);
                 requestMessage.log(localPort, false, logFile.getName());
 
                 // Prepare datagram package

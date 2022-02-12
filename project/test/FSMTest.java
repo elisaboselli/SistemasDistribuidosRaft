@@ -88,7 +88,7 @@ class FSMTest {
 
                     // Prepare menssage
                     List<String> messageParams = Arrays.asList(Constants.VOTE_OK + " for term " + 4);
-                    Message responseMessage = new Message(0, Constants.VOTE_OK, 1234, port,
+                    Message responseMessage = new Message(0, Constants.VOTE_OK, 1234, "localhost", port, "localhost",
                             messageParams);
 
                     // Prepare datagram packet
@@ -149,7 +149,7 @@ class FSMTest {
 
                     // Prepare menssage
                     List<String> params = Arrays.asList("3","5");
-                    Message responseMessage = new Message(3, Constants.HEART_BEAT_MESSAGE,1234, port,params);
+                    Message responseMessage = new Message(3, Constants.HEART_BEAT_MESSAGE,1234, "localhost", port, "localhost", params);
 
                     // Prepare datagram packet
                     String requestMessageStr = responseMessage.toJson();
@@ -206,7 +206,7 @@ class FSMTest {
                     InetAddress hostServer = InetAddress.getByName("localhost");
 
                     // Prepare menssage
-                    Message responseMessage = new Message(3, Constants.POSTULATION,1234, port,null);
+                    Message responseMessage = new Message(3, Constants.POSTULATION,1234, "localhost", port, "localhost",null);
 
                     // Prepare datagram packet
                     String requestMessageStr = responseMessage.toJson();
@@ -263,7 +263,7 @@ class FSMTest {
                     InetAddress hostServer = InetAddress.getByName("localhost");
 
                     // Prepare menssage
-                    Message responseMessage = new Message(3, Constants.HEART_BEAT_MESSAGE,1234, port,null);
+                    Message responseMessage = new Message(3, Constants.HEART_BEAT_MESSAGE,1234, "localhost", port, "localhost",null);
 
                     // Prepare datagram packet
                     String requestMessageStr = responseMessage.toJson();
@@ -320,7 +320,7 @@ class FSMTest {
                     InetAddress hostServer = InetAddress.getByName("localhost");
 
                     // Prepare menssage
-                    Message responseMessage = new Message(3, Constants.POSTULATION,1234, port,null);
+                    Message responseMessage = new Message(3, Constants.POSTULATION,1234, "localhost", port, "localhost",null);
 
                     // Prepare datagram packet
                     String requestMessageStr = responseMessage.toJson();
