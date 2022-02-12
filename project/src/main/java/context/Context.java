@@ -40,17 +40,20 @@ public class Context {
         }
 
         switch (port) {
-            case 6791:
             case 6790:
+                this.timeout = 20000; // 10 seconds
+                break;
             case 6789:
-                this.timeout = 60000; // 1 minute
+                this.timeout = 40000; // 40 seconds
                 break;
             case 6788:
-                this.timeout = 40000; // 40 seconds
+                this.timeout = 30000; // 30 seconds
                 break;
             case 6787:
                 this.timeout = 10000; // 10 seconds
                 break;
+            default:
+                this.timeout = 60000; // 1 minute
         }
     }
 
