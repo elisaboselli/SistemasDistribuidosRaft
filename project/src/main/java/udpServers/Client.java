@@ -25,18 +25,23 @@ public class Client {
             String localAddress = InetAddress.getLocalHost().getHostAddress();
 
             int serverPort = Integer.parseInt(args[0]);
-            String serverAddress = args[1];
+            String serverAddress = "localhost";
+
+            if(args.length == 2){
+                serverAddress = args[1];
+            }
 
             // Create UDP Socket
             DatagramSocket socketUDP = new DatagramSocket(localPort);
-            InetAddress hostServer = InetAddress.getByName("localhost");
+            InetAddress hostServer = InetAddress.getByName(serverAddress);
             File logFile = JSONUtils.createLogFile(String.valueOf(localPort), false);
 
             // Initialize scanner
             Scanner scan = new Scanner(System.in);
             boolean nextOp = true;
 
-            System.out.println("\n---------- BEGIN CLIENT ----------\n");
+            System.out.println("\n---------- BEGIN CLIENT ----------");
+            System.out.println("Connected to: " + serverAddress + ":" + serverPort + "\n");
 
             while (nextOp) {
 
