@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Server 6787" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="udpServers.Server" />
+    <module name="project" />
+    <option name="PROGRAM_PARAMETERS" value="6787" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
