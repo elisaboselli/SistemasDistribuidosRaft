@@ -15,7 +15,6 @@ public final class Constants {
     public static final int HEART_BEAT = 10000; // 10 seconds
 
     public static final String SENT = "Sent";
-    public static final String RECEIVED = "Received";
 
     public static final int NO_TERM = 0;
 
@@ -42,13 +41,11 @@ public final class Constants {
     public static final String APPEND_FAIL = "append_fail";
     public static final String UPDATE_SUCCESS = "update_success";
 
-    public static final String CONSISTENT_LOG = "consistent_log";
     public static final String INCONSISTENT_LOG = "inconsistent_log";
 
     public static final String UPDATE = "update";
-    public static final String UPDATE_OK = "update_ok";
     public static final String COMMIT = "commit";
-    public static final String COMMIT_OK = "commit_ok";
+    public static final String COMMIT_SUCCESS = "commit_success";
 
     public static final String POSTULATION = "postulation";
     public static final String VOTE_OK = "vote_ok";

@@ -40,6 +40,15 @@ public class Storage {
         return null;
     }
 
+    public Entry getNewestEntryById(int id){
+        for(Entry entry : entryList) {
+            if(entry.getId() == id) {
+                return entry;
+            }
+        }
+        return null;
+    }
+
     public Entry getCommitedEntryById(int id){
         for(Entry entry : entryList) {
             if(entry.getId() == id && entry.isCommited()) {

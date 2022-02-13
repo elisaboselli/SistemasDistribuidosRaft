@@ -172,7 +172,7 @@ public class SendMessageUtilsTest {
     @Test
     void test_sendAppendEntryResponseSuccesssMessage(){
 
-        SendMessageUtils.appendEntryResponse(context, datagramPacket,true, 5, false);
+        SendMessageUtils.appendEntryResponse(context, datagramPacket,true, 1,5, false);
         List<String> output = parseMessage(out.toString());
 
         assertEquals(Constants.SENT, output.get(0));
@@ -183,7 +183,7 @@ public class SendMessageUtilsTest {
     @Test
     void test_sendAppendEntryResponseFailureMessage(){
 
-        SendMessageUtils.appendEntryResponse(context, datagramPacket,false, 5, false);
+        SendMessageUtils.appendEntryResponse(context, datagramPacket,false, 1,5, false);
         List<String> output = parseMessage(out.toString());
 
         assertEquals(Constants.SENT, output.get(0));
@@ -200,7 +200,7 @@ public class SendMessageUtilsTest {
 
         context.setStorageIndex(3);
 
-        SendMessageUtils.appendEntryResponse(context, datagramPacket,true, 5, true);
+        SendMessageUtils.appendEntryResponse(context, datagramPacket,true, 1,5, true);
         List<String> output = parseMessage(out.toString());
 
         assertEquals(Constants.SENT, output.get(0));

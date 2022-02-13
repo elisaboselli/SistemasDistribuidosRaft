@@ -17,7 +17,8 @@ public class Follower {
     private static int timeout = 10000;
 
     static State execute(Context context) {
-        System.out.println("\n-------------------------- FOLLOWER --------------------------");
+        context.show(Constants.FOLLOWER);
+        System.out.println("\n------------------------------ FOLLOWER ------------------------------");
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
@@ -55,6 +56,7 @@ public class Follower {
         serverRequest.log(context.getPort(), true, context.getLogName());
         List<String> params = serverRequest.getParams();
         Storage storage;
+        Entry entry;
 
         switch (serverRequest.getType()) {
 
@@ -72,14 +74,6 @@ public class Follower {
                 int leaderIndex = Integer.parseInt(params.get(1));
                 if(leaderIndex != context.getStorageIndex()) {
                     SendMessageUtils.inconsistentLog(context, request);
-                } else {
-                    storage = JSONUtils.readStorageFile(context.getStorageName());
-                    Entry lastEntry = storage.getLastEntry();
-
-                    if(lastEntry != null && !lastEntry.isCommited()){
-                        lastEntry.commit();
-                        JSONUtils.writeStorageFile(context.getStorageName(), storage.toJsonArray());
-                    }
                 }
                 break;
 
@@ -105,7 +99,7 @@ public class Follower {
                 // Si los storage estan consistententes hasta el momento, agrego la nueva entrada.
                 Boolean consistent = logIndex == (index-1);
                 if(consistent) {
-                    Entry entry = new Entry(term, index, id, value);
+                    entry = new Entry(term, index, id, value);
 
                     if(inconsistent_log && commited) {
                         entry.commit();
@@ -117,9 +111,18 @@ public class Follower {
                 }
 
                 // Y respondo el append
-                SendMessageUtils.appendEntryResponse(context, request, consistent, logIndex+1, inconsistent_log);
+                SendMessageUtils.appendEntryResponse(context, request, consistent,id, logIndex+1, inconsistent_log);
+                break;
 
+            case Constants.COMMIT:
+                storage = JSONUtils.readStorageFile(context.getStorageName());
+                id = Integer.parseInt(params.get(0));
 
+                entry = storage.getNewestEntryById(id);
+                entry.commit();
+
+                JSONUtils.writeStorageFile(context.getStorageName(), storage.toJsonArray());
+                SendMessageUtils.commitEntryResponse(context, request);
                 break;
 
             case Constants.SET:
@@ -133,7 +136,7 @@ public class Follower {
                 id = Integer.parseInt(params.get(0));
 
                 // 2º Search Entry
-                Entry entry = storage.getCommitedEntryById(id);
+                entry = storage.getCommitedEntryById(id);
 
                 // 3º Send Response
                 SendMessageUtils.sendResponseGetMessage(context,request, entry, id);
@@ -141,7 +144,7 @@ public class Follower {
 
             // TODO: Other messages
             default:
-                //Process message
+                //Ignore
         }
     }
 }

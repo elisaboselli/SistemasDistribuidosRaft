@@ -74,18 +74,33 @@ public class SendMessageUtils {
         }
     }
 
-    public static void appendEntryResponse(Context context, DatagramPacket request, Boolean success, int lastIndex, Boolean inconsistentLog) {
+    public static void commitEntry(Context context, int id) {
+        for (Host host : context.getAllHosts()) {
+            List<String> messageParams = Collections.singletonList(String.valueOf(id));
+            sendMessage(context, host, Constants.COMMIT, messageParams);
+        }
+    }
+
+    public static void appendEntryResponse(Context context, DatagramPacket request, Boolean success, int id, int lastIndex, Boolean inconsistentLog) {
         Host host = new Host(request.getAddress(), request.getPort());
+        List<String> messageParams;
         if(success){
             if (inconsistentLog) {
                 sendMessage(context, host, Constants.UPDATE_SUCCESS, null);
             } else {
-                sendMessage(context, host, Constants.APPEND_SUCCESS, null);
+                messageParams = Collections.singletonList(String.valueOf(id));
+                sendMessage(context, host, Constants.APPEND_SUCCESS, messageParams);
             }
         } else {
-            List<String> messageParams = Collections.singletonList(String.valueOf(lastIndex));
+            messageParams = Collections.singletonList(String.valueOf(lastIndex));
             sendMessage(context, host, Constants.APPEND_FAIL, messageParams);
         }
+    }
+
+    public static void commitEntryResponse(Context context, DatagramPacket request) {
+        Host host = new Host(request.getAddress(), request.getPort());
+        List<String> messageParams;
+        sendMessage(context, host, Constants.COMMIT_SUCCESS, null);
     }
 
     public static void inconsistentLog(Context context, DatagramPacket request) {

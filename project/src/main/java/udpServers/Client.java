@@ -21,7 +21,7 @@ public class Client {
         try {
 
             // Initialize ports
-            int localPort = 6790;
+            int localPort = 6786;
             String localAddress = InetAddress.getLocalHost().getHostAddress();
 
             int serverPort = Integer.parseInt(args[0]);

@@ -70,7 +70,7 @@ public class Message {
             log.add(msgType);
 
             // Sent or received
-            String sentReceived = localPort == portFrom ? ("Sent to: " + this.addressTo + ":" + this.portTo) : ("Received from: " + this.addressTo + ":"  + this.portFrom);
+            String sentReceived = localPort == portFrom ? ("Sent to: " + this.addressTo + ":" + this.portTo) : ("Received from: " + this.addressFrom + ":"  + this.portFrom);
             sentReceived = sentReceived.concat(" [" + dtf.format(now) + "]");
             System.out.println(sentReceived);
             log.add(sentReceived);

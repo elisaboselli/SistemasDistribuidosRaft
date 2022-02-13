@@ -19,7 +19,7 @@ public class Leader {
 
     static State execute(Context context) {
 
-        System.out.println("--------------------------- LEADER ---------------------------");
+        System.out.println("------------------------------- LEADER -------------------------------");
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         System.out.println("START >>  [" + dtf.format(now) + "]\n");
@@ -128,12 +128,14 @@ public class Leader {
 
             case Constants.APPEND_SUCCESS:
                 storage = JSONUtils.readStorageFile(context.getStorageName());
-                Entry lastEntry = storage.getLastEntry();
+                id = Integer.parseInt(params.get(0));
+                entry = storage.getNewestEntryById(id);
 
-                lastEntry.updateQuorum();
+                entry.updateQuorum();
 
-                if(lastEntry.getQuorum() >= Constants.QUORUM) {
-                    lastEntry.commit();
+                if(entry.getQuorum() == Constants.QUORUM) {
+                    entry.commit();
+                    SendMessageUtils.commitEntry(context, id);
                 }
 
                 JSONUtils.writeStorageFile(context.getStorageName(), storage.toJsonArray());

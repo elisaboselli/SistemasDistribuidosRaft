@@ -21,7 +21,6 @@ public class Server {
         File logFile = JSONUtils.createLogFile(String.valueOf(port), true);
         try {
             context = new Context(port, storageFile.getName(), logFile.getName(), false);
-            context.show(Constants.FOLLOWER);
             while (state != State.HALT) {
                 state = state.execute(context);
             }

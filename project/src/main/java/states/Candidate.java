@@ -74,7 +74,7 @@ public class Candidate {
                 now = LocalDateTime.now();
                 System.out.println("timeout >>  [" + dtf.format(now) + "]");
                 context.restartSocket();
-                return State.CANDIDATE;
+                return State.FOLLOWER;
             }
 
             Gson gson = new Gson();
