@@ -1,0 +1,39 @@
+--------------------------- CONTEXT UPDATED -------------------------- <<<< Actualización de contexto: Nuevos valores
+Role: Candidate
+Address: 127.0.0.1
+Port: 6787
+Leader: null
+Term: 1
+Time out: 10000
+---------------------------------------------------------------------- <<<< Mensaje Enviado: Con tipo, destinatario y parámetros
+Message Sent - Type: postulation
+Sent to: localhost/127.0.0.1:6789 [16:41:59]
+Params:
+---------------------------------------------------------------------- <<<< Mensaje Recibido: Con tipo, remitente y respuesta
+Message Received - Type: vote_ok
+Received from: /127.0.0.1:6789 [16:41:59]
+Params: vote_ok for term 1
+---------------------------------------------------------------------- <<<< Request set recibido de cliente
+Message Received - Type: set
+Received from: localhost:6790 [16:42:11]
+Params: 1 1
+---------------------------------------------------------------------- <<<< Requerimiento de append a los demas nodos
+Message Sent - Type: append
+Sent to: localhost/127.0.0.1:6789 [16:42:11]
+Params: 1 1 1 1
+---------------------------------------------------------------------- <<<< Respuesta al get del cliente
+Message Sent - Type: Set: request accepted
+Sent to: /127.0.0.1:6790 [16:42:11]
+Params: 1 1
+---------------------------------------------------------------------- <<<< Respuesta de append exitoso de otro nodo
+Message Received - Type: append_success
+Received from: /127.0.0.1:6789 [16:42:11]
+Params:
+---------------------------------------------------------------------- <<<< Request get recibido de cliente
+Message Received - Type: get
+Received from: localhost:6790 [16:42:21]
+Params: 1
+---------------------------------------------------------------------- <<<< Respuesta al get del cliente
+Message Sent - Type: Get: id found
+Sent to: /127.0.0.1:6790 [16:42:21]
+Params: 1 1

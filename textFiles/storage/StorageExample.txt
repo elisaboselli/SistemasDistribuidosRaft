@@ -1,0 +1,39 @@
+[
+ {
+  "quorum": 3, <<------------- Quorum de appends para la entrada en cuestión (solo válido para el storage del lider)
+  "index": 4, <<-------------- Índice de la entrada dentro del storage
+  "term": 3, <<--------------- Término en el cual se persistió la entrada
+  "id": 2, <<----------------- Id de la entrada
+  "value": 20, <<------------- Valor de la entrada
+  "commited": false <<-------- Indica si la entrada fue confirmada (una entrada no confirmada no se tendrá en cuenta en caso de get)
+ },
+ {
+  "quorum": 3,
+  "index": 3,
+  "term": 2, <<--------------- Entrada persistida en un término anterior
+  "id": 1, <<----------------- Id de la entrada
+  "value": 10, <<------------- Valor de la entrada
+  "commited": true <<--------- Entrada confirmada
+ },
+ {
+  "quorum": 1, <<------------- Quorum en un nodo no lider
+  "index": 2,
+  "term": 1, <<--------------- Entrada persistida en un término anterior
+  "id": 2,
+  "value": 2,
+  "commited": true <<--------- Entrada confirmada
+ },
+ {
+  "quorum": 1,
+  "index": 1,
+  "term": 1,
+  "id": 1, <<----------------- Id de la entrada
+  "value": 1, <<-------------- Valor anterior de la entrada
+  "commited": true <<--------- Entrada confirmada
+ }
+]
+
+
+Casos de uso:
+- Get 1 devuelve el par (1,10); ya que es la entrada mas reciente confirmada
+- Get 2 devuelve el par (2,2); ya que hay una entrada mas reciente pero no está confirmada
