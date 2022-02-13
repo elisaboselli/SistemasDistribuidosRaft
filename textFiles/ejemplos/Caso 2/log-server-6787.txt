@@ -1,0 +1,45 @@
+--------------------------- CONTEXT UPDATED --------------------------
+Role: Follower
+Address: 127.0.0.1
+Port: 6787
+Leader: null
+Term: 0
+Time out: 15000
+--------------------------- CONTEXT UPDATED --------------------------
+Role: Candidate
+Address: 127.0.0.1
+Port: 6787
+Leader: null
+Term: 1
+Time out: 15000
+----------------------------------------------------------------------
+Message Sent - Type: postulation
+Sent to: localhost/127.0.0.1:6788 [18:39:10]
+Params: 
+----------------------------------------------------------------------
+Message Sent - Type: postulation
+Sent to: localhost/127.0.0.1:6789 [18:39:10]
+Params: 
+----------------------------------------------------------------------
+Message Sent - Type: postulation
+Sent to: localhost/127.0.0.1:6790 [18:39:10]
+Params: 
+----------------------------------------------------------------------
+Message Received - Type: vote_ok
+Received from: /127.0.0.1:6788 [18:39:10]
+Params: vote_ok for term 1 
+----------------------------------------------------------------------
+Message Received - Type: vote_ok
+Received from: /127.0.0.1:6789 [18:39:10]
+Params: vote_ok for term 1 
+--------------------------- CONTEXT UPDATED --------------------------
+Role: Leader
+Address: 127.0.0.1
+Port: 6787
+Leader: null
+Term: 1
+Time out: 15000
+----------------------------------------------------------------------
+Message Received - Type: vote_ok
+Received from: /127.0.0.1:6790 [18:39:10]
+Params: vote_ok for term 1 

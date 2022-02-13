@@ -1,0 +1,61 @@
+--------------------------- CONTEXT UPDATED --------------------------
+Role: Follower
+Address: 127.0.0.1
+Port: 6787
+Leader: null
+Term: 0
+Time out: 10000
+--------------------------- CONTEXT UPDATED --------------------------
+Role: Candidate
+Address: 127.0.0.1
+Port: 6787
+Leader: null
+Term: 1
+Time out: 10000
+----------------------------------------------------------------------
+Message Sent - Type: postulation
+Sent to: localhost/127.0.0.1:6789 [17:38:23]
+Params: 
+----------------------------------------------------------------------
+Message Sent - Type: postulation
+Sent to: localhost/127.0.0.1:6788 [17:38:23]
+Params: 
+----------------------------------------------------------------------
+Message Received - Type: vote_ok
+Received from: /127.0.0.1:6789 [17:38:23]
+Params: vote_ok for term 1 
+--------------------------- CONTEXT UPDATED --------------------------
+Role: Leader
+Address: 127.0.0.1
+Port: 6787
+Leader: null
+Term: 1
+Time out: 10000
+----------------------------------------------------------------------
+Message Received - Type: vote_ok
+Received from: /127.0.0.1:6788 [17:38:23]
+Params: vote_ok for term 1 
+----------------------------------------------------------------------
+Message Received - Type: set
+Received from: localhost:6790 [17:38:40]
+Params: 1 1 
+----------------------------------------------------------------------
+Message Sent - Type: append
+Sent to: localhost/127.0.0.1:6789 [17:38:40]
+Params: 1 1 1 1 
+----------------------------------------------------------------------
+Message Sent - Type: append
+Sent to: localhost/127.0.0.1:6788 [17:38:40]
+Params: 1 1 1 1 
+----------------------------------------------------------------------
+Message Sent - Type: Set: request accepted
+Sent to: /127.0.0.1:6790 [17:38:40]
+Params: 1 1 
+----------------------------------------------------------------------
+Message Received - Type: append_success
+Received from: /127.0.0.1:6789 [17:38:40]
+Params: 
+----------------------------------------------------------------------
+Message Received - Type: append_success
+Received from: /127.0.0.1:6788 [17:38:40]
+Params: 

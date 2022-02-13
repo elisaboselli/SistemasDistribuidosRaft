@@ -1,0 +1,39 @@
+--------------------------- CONTEXT UPDATED --------------------------
+Role: Follower
+Address: 127.0.0.1
+Port: 6787
+Leader: null
+Term: 0
+Time out: 10000
+----------------------------------------------------------------------
+Message Sent - Type: inconsistent_log
+Sent to: /127.0.0.1:6788 [17:40:13]
+Params: 0 
+----------------------------------------------------------------------
+Message Received - Type: append
+Received from: /127.0.0.1:6788 [17:40:13]
+Params: 1 1 1 1 true update 
+----------------------------------------------------------------------
+Message Sent - Type: update_success
+Sent to: /127.0.0.1:6788 [17:40:13]
+Params: 
+----------------------------------------------------------------------
+Message Sent - Type: inconsistent_log
+Sent to: /127.0.0.1:6788 [17:40:23]
+Params: 1 
+----------------------------------------------------------------------
+Message Received - Type: append
+Received from: /127.0.0.1:6788 [17:40:23]
+Params: 2 2 2 2 true update 
+----------------------------------------------------------------------
+Message Sent - Type: update_success
+Sent to: /127.0.0.1:6788 [17:40:23]
+Params: 
+----------------------------------------------------------------------
+Message Received - Type: get
+Received from: localhost:6790 [17:40:35]
+Params: 2 
+----------------------------------------------------------------------
+Message Sent - Type: Get: id found
+Sent to: /127.0.0.1:6790 [17:40:35]
+Params: 2 2 

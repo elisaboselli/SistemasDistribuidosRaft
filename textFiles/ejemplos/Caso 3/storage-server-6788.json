@@ -1,0 +1,8 @@
+[{
+ "quorum": 1,
+ "index": 1,
+ "term": 1,
+ "id": 1,
+ "value": 1,
+ "commited": false
+}]

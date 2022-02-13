@@ -1,0 +1,85 @@
+--------------------------- CONTEXT UPDATED --------------------------
+Role: Follower
+Address: 127.0.0.1
+Port: 6787
+Leader: null
+Term: 0
+Time out: 10000
+--------------------------- CONTEXT UPDATED --------------------------
+Role: Candidate
+Address: 127.0.0.1
+Port: 6787
+Leader: null
+Term: 1
+Time out: 10000
+----------------------------------------------------------------------
+Message Sent - Type: postulation
+Sent to: localhost/127.0.0.1:6788 [19:28:01]
+Params: 
+----------------------------------------------------------------------
+Message Sent - Type: postulation
+Sent to: localhost/127.0.0.1:6789 [19:28:01]
+Params: 
+----------------------------------------------------------------------
+Message Received - Type: vote_ok
+Received from: 127.0.0.1:6788 [19:28:01]
+Params: vote_ok for term 1 
+--------------------------- CONTEXT UPDATED --------------------------
+Role: Leader
+Address: 127.0.0.1
+Port: 6787
+Leader: null
+Term: 1
+Time out: 10000
+----------------------------------------------------------------------
+Message Received - Type: vote_ok
+Received from: 127.0.0.1:6789 [19:28:01]
+Params: vote_ok for term 1 
+----------------------------------------------------------------------
+Message Received - Type: set
+Received from: 127.0.0.1:6786 [19:28:37]
+Params: 1 1 
+----------------------------------------------------------------------
+Message Sent - Type: append
+Sent to: localhost/127.0.0.1:6788 [19:28:37]
+Params: 1 1 1 1 
+----------------------------------------------------------------------
+Message Sent - Type: append
+Sent to: localhost/127.0.0.1:6789 [19:28:37]
+Params: 1 1 1 1 
+----------------------------------------------------------------------
+Message Sent - Type: Set: request accepted
+Sent to: /127.0.0.1:6786 [19:28:37]
+Params: 1 1 
+----------------------------------------------------------------------
+Message Received - Type: append_success
+Received from: 127.0.0.1:6788 [19:28:37]
+Params: 1 
+----------------------------------------------------------------------
+Message Sent - Type: commit
+Sent to: localhost/127.0.0.1:6788 [19:28:37]
+Params: 1 
+----------------------------------------------------------------------
+Message Sent - Type: commit
+Sent to: localhost/127.0.0.1:6789 [19:28:37]
+Params: 1 
+----------------------------------------------------------------------
+Message Received - Type: append_success
+Received from: 127.0.0.1:6789 [19:28:37]
+Params: 1 
+----------------------------------------------------------------------
+Message Received - Type: commit_success
+Received from: 127.0.0.1:6788 [19:28:37]
+Params: 
+----------------------------------------------------------------------
+Message Received - Type: commit_success
+Received from: 127.0.0.1:6789 [19:28:37]
+Params: 
+----------------------------------------------------------------------
+Message Received - Type: get
+Received from: 127.0.0.1:6786 [19:28:49]
+Params: 1 
+----------------------------------------------------------------------
+Message Sent - Type: Get: id found
+Sent to: /127.0.0.1:6786 [19:28:49]
+Params: 1 1 

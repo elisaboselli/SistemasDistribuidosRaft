@@ -1,0 +1,16 @@
+----------------------------------------------------------------------
+Message Sent - Type: set
+Sent to: localhost:6787 [19:28:37]
+Params: 1 1 
+----------------------------------------------------------------------
+Message Received - Type: Set: request accepted
+Received from: 127.0.0.1:6787 [19:28:37]
+Params: 1 1 
+----------------------------------------------------------------------
+Message Sent - Type: get
+Sent to: localhost:6787 [19:28:49]
+Params: 1 
+----------------------------------------------------------------------
+Message Received - Type: Get: id found
+Received from: 127.0.0.1:6787 [19:28:49]
+Params: 1 1 

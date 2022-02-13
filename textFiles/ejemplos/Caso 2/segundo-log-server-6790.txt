@@ -1,0 +1,22 @@
+--------------------------- CONTEXT UPDATED --------------------------
+Role: Follower
+Address: 127.0.0.1
+Port: 6790
+Leader: null
+Term: 0
+Time out: 90000
+----------------------------------------------------------------------
+Message Received - Type: postulation
+Received from: localhost/127.0.0.1:6788 [18:40:10]
+Params: 
+--------------------------- CONTEXT UPDATED --------------------------
+Role: Follower
+Address: 127.0.0.1
+Port: 6790
+Leader: Host [address = /127.0.0.1, port = 6788]
+Term: 3
+Time out: 90000
+----------------------------------------------------------------------
+Message Sent - Type: vote_ok
+Sent to: /127.0.0.1:6788 [18:40:10]
+Params: vote_ok for term 3 
