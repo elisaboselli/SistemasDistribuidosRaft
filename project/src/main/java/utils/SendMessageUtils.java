@@ -48,7 +48,6 @@ public class SendMessageUtils {
     }
 
     public static void sendVote(Context context, DatagramPacket voteRequest, int requestTerm) {
-        // TODO: Check requestTerm >= contextTerm && requestIndex >= contextIndex
 
         // Update term if needed
         boolean isPositiveVote = context.getTerm() < requestTerm;

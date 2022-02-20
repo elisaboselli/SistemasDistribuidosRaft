@@ -7,6 +7,7 @@ import java.net.SocketException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.SplittableRandom;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -15,7 +16,7 @@ import utils.*;
 
 public class Leader {
 
-    private static String state = "leader";
+    private static String state = Constants.LEADER;
 
     static State execute(Context context) {
 
@@ -49,7 +50,7 @@ public class Leader {
         }
 
         // Wait for messages
-        while (state.equals("leader")){
+        while (state.equals(State.LEADER)){
             byte[] buffer = new byte[1000];
             DatagramPacket request = new DatagramPacket(buffer, buffer.length);
             try {
@@ -60,11 +61,11 @@ public class Leader {
             }
         }
 
-        if(state.equals("follower")) {
+        if(state.equals(Constants.FOLLOWER)) {
             return State.FOLLOWER;
         }
 
-        if(state.equals("candidate")) {
+        if(state.equals(Constants.CANDIDATE)) {
             return State.CANDIDATE;
         }
 
@@ -84,7 +85,10 @@ public class Leader {
 
             case Constants.POSTULATION:
                 SendMessageUtils.sendVote(context, request, serverRequest.getTerm());
-                state = "follower";
+
+                if(context.getTerm() < serverRequest.getTerm()) {
+                    state = Constants.FOLLOWER;
+                }
                 break;
 
             case Constants.HEART_BEAT_MESSAGE:
@@ -92,7 +96,7 @@ public class Leader {
                     Host leaderHost = new Host(request.getAddress(), request.getPort());
                     context.setLeader(leaderHost);
                     context.setTerm(serverRequest.getTerm());
-                    state = "follower";
+                    state = Constants.FOLLOWER;
                 }
                 break;
 

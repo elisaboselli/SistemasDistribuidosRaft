@@ -103,7 +103,9 @@ public class Candidate {
 
             case Constants.POSTULATION:
                 SendMessageUtils.sendVote(context, acceptorResponse, serverResponse.getTerm());
-                return State.FOLLOWER;
+                if (context.getTerm() < serverResponse.getTerm()) {
+                    return State.FOLLOWER;
+                }
 
             default:
                 // TODO
