@@ -4,22 +4,22 @@ Se tienen 3 servidores los cuales identificamos por sus puertos (`6787`, `6788` 
 ### Configuración
 - Quorum = 2
 - All servers:
-  - `6787` >> timeout == 10 seconds
-  - `6788` >> timeout == 30 seconds
-  - `6789` >> timeout == 40 seconds
+  - `6787` >> timeout = 10 seconds
+  - `6788` >> timeout = 30 seconds
+  - `6789` >> timeout = 40 seconds
 
 ### Ejecuciones Realizadas
 1) `java -jar server.jar 6787`
 2) `java -jar server.jar 6788`
 3) `java -jar server.jar 6789`
 4) `java -jar client.jar 6787`
-5) Client > set 1 1
+5) Client > `set 1 1`
 6) `Ctrl+c` en client
 7) `Ctrl+c` en server `6787`
 8) `java -jar client.jar 6788`
-9) Client > set 2 2
+9) Client > `set 2 2`
 10) `java -jar server.jar 6787`
-11) Client > get 2
+11) Client > `get 2`
 
 ### Comportamiento Esperado
 1) Se levantan los 3 servidores como followers.
