@@ -147,6 +147,7 @@ public class Leader {
                 break;
 
             case Constants.INCONSISTENT_LOG:
+            case Constants.APPEND_FAIL:
 
                 int followerIndex = Integer.parseInt(params.get(0));
                 storage = JSONUtils.readStorageFile(context.getStorageName());
