@@ -22,16 +22,17 @@ Para la evaluación de proyecto se tendrán en cuenta las siguientes propiedades
 Cualquier precondición o configuración asumida debería ser adecuadamente descripta.
 
 ## Implementación
-Para la implementación del sistema requerido en la consigna se utilizó el protocolo de consenso Raft; el cual es un versión simplificada de Paxos pero que mantiene su tolerancia a fallas y rendimiento. Entre las diferencias principales de ambos protocolos se encuentra la ausencia de roles y reglas de interacción de Paxos en Raft; en donde todos los nodos son servidores equivalentes (con la excepción del rol de lider de uno de ellos). 
+Para la implementación del sistema requerido en la consigna se utilizó el protocolo de consenso Raft; el cual es una versión simplificada de Paxos, pero que mantiene su tolerancia a fallas y rendimiento. Entre las diferencias principales de ambos protocolos se encuentra la ausencia de roles y reglas de interacción de Paxos en Raft; en donde todos los nodos son servidores equivalentes (con la excepción del rol de líder de uno de ellos). 
 
 ### Sobre Raft
-Como se mecionó anteriormente Raft es un algoritmo de consenso diseñado para ser fácil de entender. El consenso implica que varios servidores se pongan de acuerdo sobre un conjunto valores. Una vez que llegan a una decisión sobre un valor, esa decisión es definitiva. El protocolo es tolerante a N/2 - 1 fallas (con mas de la mitad de los servidores activos sigue funcionando); mientras que si  fallan más servidores, los restantes dejan de progresar (seguiran funcionando para los valores previamente consensuados pero no se incorporarán nuevos valores).
+Como se mencionó anteriormente Raft es un algoritmo de consenso diseñado para ser fácil de entender. El consenso implica que varios servidores se pongan de acuerdo sobre un conjunto valores. Una vez que llegan a una decisión sobre un valor, esa decisión es definitiva. El protocolo es tolerante a N/2 - 1 fallas (con más de la mitad de los servidores activos sigue funcionando); mientras que si fallan más servidores, los restantes dejan de progresar (seguirán funcionando para los valores previamente consensuados, pero no se incorporarán nuevos valores).
 
 Cada servidor tiene una máquina de estado y un registro. A los clientes les parecerá que están interactuando con una única máquina de estado fiable, incluso si una minoría de los servidores del clúster falla. Cada máquina de estado toma como entrada los comandos de su registro. 
 
 [Mas información sobre Raft](https://raft.github.io/raft.pdf)
 
-
+### Sobre mi Implementación
+Para un detalle mas completo sobre la implementación dirigirse a [Implementación.md](doc/Implementacion.md).
 
 
 ### Instalación
