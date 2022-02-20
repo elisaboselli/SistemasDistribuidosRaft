@@ -31,20 +31,7 @@ Cada servidor tiene una máquina de estado y un registro. A los clientes les par
 
 [Mas información sobre Raft](https://raft.github.io/raft.pdf)
 
-### Sobre mi Implementación
-Tal como se describe en el algoritmo Raft, implementado en Java 8, cada servidor posee una máquina de estados con tres posibles valores (`Follower`, `Candidate` y `Leader`), entre los cuales el mismo puede ir variando como se ve en el siguiente gráfico:
 
-![Máquina de Estados de Servidor](img/StateMachine.png)
-
-Además cada servidor cuenta con dos archivos, uno de registro como indica el protocolo donde quedará el historial de valores consensuados (y no consensuados) mientras dure la ejecución del servidor (cuando el servidor se cae y luego se recupera, su registro se reinicializa sincronizándose con el del líder actual) y uno de logs que se agrega a los fines prácticos de poder realizar un análisis de los mensajes intercambiados entre servidores.
-
-Se implementó también un cliente el cual se conecta directamente a uno de los servidores para generar la interacción esperada, y el cual también genera un archivo de log (pero no de registro). 
-
-Todos los archivos generados se persisten dentro del directorio `/textFiles`, en `/storage` y `/logs` según corresponda, con el nombre formado por la fecha y hora en la cual se inicializa el servidor con el formato `YYYYMMddHHmm-` y el puerto en el que está escuchando el servidor (por ejemplo `202202192008-5678`) y la extensión `.json` para los registros (para poder procesarlos de manera sencilla durante la ejecución del servidor) y `.txt` para los logs (para sencillamente leerlos en un editor de texto).
-
-Dentro del directorio `/textFiles` también se encuentra un archivo estático llamado `allServers.txt` el cual contiene la lista de todos los servidores disponibles (esto es para mantener una lista de host para enviar mensajes de tipo broadcast, ya que la misma no es dinámica). Antes de la ejecución de los servidores se debe configurar este archivo según el escenario deseado. 
-
-En cuanto al envío de mensajes entre servidores y clientes, se utiliza el protocolo UDP donde cada mensaje se envía de forma independiente en el socket, pero con la consideración que el aplicativo (tanto cliente como servidor) queda a la espera de una respuesta para la mayoría de los mensajes.
 
 
 ### Instalación

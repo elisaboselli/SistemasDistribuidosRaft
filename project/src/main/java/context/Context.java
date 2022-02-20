@@ -11,18 +11,17 @@ import utils.Host;
 import utils.JSONUtils;
 
 public class Context {
-    //private final static int WAIT_TIME = 60000;
-    private int port;
+    private final int port;
     private String address;
     private DatagramSocket serverSocket;
-    // private byte[] buffer;
+    private final int timeout;
     private List<Host> allHosts;
     private Host leader;
     private int term;
-    private String storageFile;
-    private String logFile;
-    private int timeout;
     private int storageIndex;
+    private final String storageFile;
+    private final String logFile;
+
 
     public Context(int port, String storageFile, String logFile, Boolean isTest) throws SocketException {
         this.term = 0;
@@ -94,20 +93,12 @@ public class Context {
         return port;
     }
 
-    public void setPort(int port) {
-        this.port = port;
-    }
-
     public String getAddress() {
         return address;
     }
 
     public DatagramSocket getServerSocket() {
         return serverSocket;
-    }
-
-    public void setServerSocket(DatagramSocket serverSocket) {
-        this.serverSocket = serverSocket;
     }
 
     public List<Host> getAllHosts() {
@@ -130,10 +121,6 @@ public class Context {
         return this.timeout;
     }
 
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
-    }
-
     public int getStorageIndex() { return this.storageIndex; }
 
     public void updateLogIndex() { this.storageIndex++; }
@@ -146,10 +133,6 @@ public class Context {
 
     public String getLogName() {
         return this.logFile;
-    }
-
-    public static int getWaitTime() {
-        return Constants.MIN_TIMEOUT;
     }
 
     public void restartSocket() {
