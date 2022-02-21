@@ -2,6 +2,8 @@
 
 Proyecto correspondiente al final de la asignatura "Telecomunicaciones y Sistemas Distribuidos" (1968) de la Universidad Nacional de Río Cuarto.
 
+---
+
 ## Consigna
 
 Se plantea el desarrollo de un sistema de recursos distribuidos tolerante a fallas (hasta N/2 − 1 nodos), con N procesos.
@@ -21,6 +23,8 @@ Para la evaluación de proyecto se tendrán en cuenta las siguientes propiedades
 
 Cualquier precondición o configuración asumida debería ser adecuadamente descrita.
 
+---
+
 ## Implementación
 Para la implementación del sistema requerido en la consigna se utilizó el protocolo de consenso Raft; el cual es una versión simplificada de Paxos, pero que mantiene su tolerancia a fallas y rendimiento. Entre las diferencias principales de ambos protocolos se encuentra la ausencia de roles y reglas de interacción de Paxos en Raft; en donde todos los nodos son servidores equivalentes (con la excepción del rol de líder de uno de ellos). 
 
@@ -34,9 +38,12 @@ Cada servidor tiene una máquina de estado y un registro. A los clientes les par
 ### Sobre mi Implementación
 Para un detalle más completo sobre la implementación dirigirse a [Implementación](doc/Implementacion.md).
 
+Para un detalle de casos de uso generados dirigirse a [Escenarios de Pruebas](doc/Pruebas.md).
 
 ### Instalación
 Para obtener un detalle de instalación y despliege dirigirse a [Instalación & Despliegue](doc/Instalacion-Despliegue.md).
+
+---
 
 ## Autor
 * **Elisa Boselli** 

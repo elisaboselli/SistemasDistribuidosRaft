@@ -1,6 +1,8 @@
 # Instalación y Despliegue
 En esta sección se detallará el paso a paso para utilizar la aplicación de forma local.
 
+---
+
 ## Configuración Inicial
 - Obtener el código fuente de la aplicación del [repositorio actual](https://github.com/elisaboselli/SistemasDistribuidosRaft).
 - A partir de la raíz, localizar el archivo `/textFiles/allServers.txt` y declarar tantos servidores como se desee (dicho listado será utilizado por el servidor líder para enviar mensajes al resto). 
@@ -8,10 +10,14 @@ En esta sección se detallará el paso a paso para utilizar la aplicación de fo
 - A partir de la raíz, localizar el archivo `project/src/main/java/utils/Constants.java` y actualizar el valor `SERVERS_QTY` según la cantidad de servidores declarados previamente (dicho valor será utilizado para calcular el quorum).
 - El cliente está pre-configurado para ejecutarse en el puerto local `6786`, en caso de desear ejecutarlo en un puerto diferente, en el archivo anterior (`Constants.java`) actualizar el valor `CLIENT_PORT` usando un valor diferente de los declarados en `allServers.txt`.
 
+---
+
 ## Instalación
 Completados los pasos de configuración inicial, se compilará el código y generará el ejecutable:
 - En terminal, a partir de la raíz, ejecutar los comandos `cd project` y `mvn package` los cuales generarán un nuevo directorio `/target`.
 - Ejecutar los comandos `cd target` y `ln -s ../../textFiles ./textFiles` para generar un link simbólico al directorio textFiles original.
+
+---
 
 ## Despliegue
 Finalmente para inicializar el sistema, se deberá ejecutar los siguientes comandos desde el directorio `/target` mencionado previamente.
