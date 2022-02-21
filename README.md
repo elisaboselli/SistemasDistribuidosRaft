@@ -32,7 +32,7 @@ Cada servidor tiene una máquina de estado y un registro. A los clientes les par
 [Mas información sobre Raft](https://raft.github.io/raft.pdf)
 
 ### Sobre mi Implementación
-Para un detalle más completo sobre la implementación dirigirse a [Implementación.md](doc/Implementacion.md).
+Para un detalle más completo sobre la implementación dirigirse a [Implementación](doc/Implementacion.md).
 
 
 ### Instalación
