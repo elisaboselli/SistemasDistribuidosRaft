@@ -36,7 +36,7 @@ Para un detalle más completo sobre la implementación dirigirse a [Implementaci
 
 
 ### Instalación
-Para obtener un detalle de instalación y despliege dirigirse a [Instalación & Despliegue](doc/Instalacion-Despliegue.md)
+Para obtener un detalle de instalación y despliege dirigirse a [Instalación & Despliegue](doc/Instalacion-Despliegue.md).
 
 ## Autor
 * **Elisa Boselli** 
