@@ -50,7 +50,7 @@ public class Leader {
         }
 
         // Wait for messages
-        while (state.equals(State.LEADER)){
+        while (state.equals(Constants.LEADER)){
             byte[] buffer = new byte[1000];
             DatagramPacket request = new DatagramPacket(buffer, buffer.length);
             try {
