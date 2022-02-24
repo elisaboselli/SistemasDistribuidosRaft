@@ -8,12 +8,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class ClientApplication2 extends Application {
+public class ClientApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
 
-        FXMLLoader fxmlLoader = new FXMLLoader(ClientApplication2.class.getResource("client-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientApp.class.getResource("client-view.fxml"));
         FlowPane flowPane = fxmlLoader.load();
 
         ClientController controller = fxmlLoader.getController();

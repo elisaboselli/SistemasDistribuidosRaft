@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 
 public class Message {
 
-    private int term;
+    public int term;
     private String type;
     private int portFrom;
     private String addressFrom;
