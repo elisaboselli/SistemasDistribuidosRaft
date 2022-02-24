@@ -26,8 +26,6 @@
           </execution>
         </executions>
       </plugin>
-<<<<<<< HEAD
-=======
       <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
@@ -85,7 +83,6 @@
           </execution>
         </executions>
       </plugin>
->>>>>>> ac17f3f (user interface)
     </plugins>
   </build>
   <dependencies>
@@ -124,7 +121,6 @@
       <scope>test</scope>
       <exclusions>
         <exclusion>
-<<<<<<< HEAD
           <artifactId>jsr305</artifactId>
           <groupId>com.google.code.findbugs</groupId>
         </exclusion>
@@ -133,8 +129,6 @@
           <groupId>org.slf4j</groupId>
         </exclusion>
         <exclusion>
-=======
->>>>>>> ac17f3f (user interface)
           <artifactId>jcommander</artifactId>
           <groupId>com.beust</groupId>
         </exclusion>
@@ -176,8 +170,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-<<<<<<< HEAD
-=======
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
@@ -194,7 +186,6 @@
         </exclusion>
       </exclusions>
     </dependency>
->>>>>>> ac17f3f (user interface)
   </dependencies>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
