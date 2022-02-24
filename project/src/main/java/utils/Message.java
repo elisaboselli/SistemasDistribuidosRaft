@@ -3,13 +3,14 @@ package utils;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.gson.Gson;
 
 public class Message {
 
-    private int term;
+    public int term;
     private String type;
     private int portFrom;
     private String addressFrom;
@@ -27,6 +28,10 @@ public class Message {
         this.portTo = portTo;
         this.addressTo = addressTo;
         this.params = params;
+    }
+
+    public Message(String params){
+        this.params = Arrays.asList(params);
     }
 
     public int getTerm() {
